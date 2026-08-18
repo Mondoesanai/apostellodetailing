@@ -6,7 +6,7 @@
 
 // The referral form and email signup form open a pre-filled email addressed
 // here (no backend / no 3rd-party form service). Swap in Shiloh's real inbox.
-const CONTACT_EMAIL = "hello@apostellodetailing.com";
+const CONTACT_EMAIL = "apostello.business@gmail.com";
 const CONTACT_PHONE = "(540) 484-3990";
 const CONTACT_PHONE_TEL = "+15404843990";
 

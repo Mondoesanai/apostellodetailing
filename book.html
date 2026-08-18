@@ -129,39 +129,16 @@
         <p id="zipResult" class="text-sm mt-4"></p>
       </div>
 
-      <!-- CALENDAR
-           This is a working demo calendar (fake availability) so the booking flow
-           is fully clickable right now. Once Shiloh's Calendly account exists and
-           is connected to his Google Calendar, replace this block with:
-
-           <div class="calendly-inline-widget" data-url="https://calendly.com/YOUR-LINK-HERE"
-                style="min-width:320px;height:700px;"></div>
-           <script src="https://assets.calendly.com/assets/external/widget.js"></script>
-
-           That's the entire swap — Calendly handles real-time availability,
-           double-booking prevention, confirmation emails/texts, and reminders. -->
+      <!-- CALENDAR — live Calendly embed, synced to Shiloh's Google Calendar.
+           Calendly's own form collects name/phone/service address (via a
+           custom question configured on his event type), so we don't
+           duplicate those fields here. -->
       <div class="surface p-6 md:p-8 reveal in" id="calendarSection">
-        <div class="flex items-center justify-between mb-1 flex-wrap gap-2">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
           <p class="text-xs font-bold text-[var(--blue-300)]">PICK A DAY &amp; TIME</p>
-          <span class="chip text-[10px] py-1.5">🔗 Syncs to Shiloh's Google Calendar via Calendly</span>
+          <span class="chip text-[10px] py-1.5">🔗 Synced to Shiloh's Google Calendar via Calendly</span>
         </div>
-        <p class="drag-hint mb-3"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M1 7l3-3M1 7l3 3M13 7l-3-3M13 7l-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Swipe for more dates, then tap a time</p>
-        <div id="dayPicker" class="flex gap-3 overflow-x-auto pb-3 mb-5"></div>
-        <div id="timePicker" class="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-6"></div>
-
-        <div class="grid sm:grid-cols-2 gap-3 mb-4">
-          <input type="text" id="custName" placeholder="Full name">
-          <input type="tel" id="custPhone" placeholder="Phone number">
-        </div>
-        <input type="text" id="custAddress" placeholder="Service address (where we'll meet you)" class="mb-6">
-
-        <button type="button" id="confirmBtn" disabled class="btn btn-primary w-full justify-center py-4 text-base opacity-40 cursor-not-allowed">Select a day &amp; time to continue</button>
-
-        <div id="confirmedPanel" class="hidden mt-6 p-6 rounded-2xl border border-[var(--blue-400)]/40 bg-[var(--blue-900)]/40 text-center">
-          <p class="font-display text-2xl mb-2 text-[var(--blue-300)]">YOU'RE BOOKED! ✓</p>
-          <p class="text-sm text-[var(--muted)] mb-1" id="confirmSummary"></p>
-          <p class="text-xs text-[var(--muted-2)] mt-3">A confirmation + reminder text/email will be sent automatically before your appointment.</p>
-        </div>
+        <div class="calendly-inline-widget" data-url="https://calendly.com/apostello-business/client-booking?hide_gdpr_banner=1&background_color=0b1220&text_color=f5f8fc&primary_color=2e9bff" style="min-width:280px;height:750px;"></div>
       </div>
     </div>
 
@@ -200,7 +177,6 @@
   let selectedAddons = new Set();
   let freq = 'once';
   let boatFt = 20;
-  let selectedDay = null, selectedTime = null;
 
   const carFlow = document.getElementById('carFlow');
   const boatFlow = document.getElementById('boatFlow');
@@ -316,63 +292,8 @@
     }
   }
 
-  // ---- MOCK CALENDAR (demo — wire to live Calendly/Google Calendar at launch) ----
-  const dayPicker = document.getElementById('dayPicker');
-  const timePicker = document.getElementById('timePicker');
-  const days = [];
-  const today = new Date();
-  for (let i = 1; i <= 14; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    if (d.getDay() === 0) continue; // closed Sundays (assumption)
-    days.push(d);
-  }
-  const busyDayIdx = new Set([2, 6, 9]);
-  dayPicker.innerHTML = days.map((d, i) => `
-    <button type="button" data-day="${i}" ${busyDayIdx.has(i) ? 'disabled' : ''}
-      class="chip flex-col items-center justify-center min-w-[68px] py-3 ${busyDayIdx.has(i) ? 'opacity-30 cursor-not-allowed' : ''}">
-      <span class="text-[10px] uppercase">${d.toLocaleDateString('en-US',{weekday:'short'})}</span>
-      <span class="font-display text-lg leading-none mt-1">${d.getDate()}</span>
-    </button>`).join('');
-
-  const allSlots = ['9:00 AM','10:30 AM','12:00 PM','1:30 PM','3:00 PM','4:30 PM'];
-  dayPicker.querySelectorAll('[data-day]').forEach(btn => btn.addEventListener('click', () => {
-    dayPicker.querySelectorAll('[data-day]').forEach(x => x.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedDay = days[parseInt(btn.dataset.day, 10)];
-    selectedTime = null;
-    updateConfirmState();
-    const busySlots = new Set([Math.floor(Math.random()*allSlots.length)]);
-    timePicker.innerHTML = allSlots.map((t, i) => `
-      <button type="button" data-time="${t}" ${busySlots.has(i) ? 'disabled' : ''}
-        class="chip justify-center py-3 ${busySlots.has(i) ? 'opacity-30 cursor-not-allowed' : ''}">${t}</button>`).join('');
-    timePicker.querySelectorAll('[data-time]').forEach(tb => tb.addEventListener('click', () => {
-      timePicker.querySelectorAll('[data-time]').forEach(x => x.classList.remove('selected'));
-      tb.classList.add('selected');
-      selectedTime = tb.dataset.time;
-      updateConfirmState();
-    }));
-  }));
-
-  const confirmBtn = document.getElementById('confirmBtn');
-  function updateConfirmState(){
-    const ready = selectedDay && selectedTime;
-    confirmBtn.disabled = !ready;
-    confirmBtn.classList.toggle('opacity-40', !ready);
-    confirmBtn.classList.toggle('cursor-not-allowed', !ready);
-    confirmBtn.textContent = ready ? 'Confirm Booking' : 'Select a day & time to continue';
-  }
-
-  confirmBtn.addEventListener('click', () => {
-    if (confirmBtn.disabled) return;
-    const name = document.getElementById('custName').value || 'there';
-    document.getElementById('confirmedPanel').classList.remove('hidden');
-    document.getElementById('confirmSummary').textContent =
-      `Thanks, ${name}! ${selectedDay.toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric'})} at ${selectedTime} — $${document.getElementById('totalPrice').textContent} total.`;
-    confirmBtn.classList.add('hidden');
-    document.getElementById('confirmedPanel').scrollIntoView({behavior:'smooth', block:'center'});
-  });
 })();
 </script>
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 </body>
 </html>
