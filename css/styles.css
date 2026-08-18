@@ -29,10 +29,12 @@
   --radius-lg:24px;
 }
 
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth; overflow-x:hidden;}
+*{box-sizing:border-box; margin:0;}
+html{scroll-behavior:smooth; overflow-x:hidden; background:var(--bg-void);}
 body{
   overflow-x:hidden;
+  min-height:100vh;
+  min-height:100dvh;
   background:var(--bg-void);
   color:var(--white);
   font-family:'Inter',sans-serif;
@@ -204,7 +206,7 @@ input:focus, select:focus, textarea:focus{
 ::selection{background:var(--blue-500); color:#04101f;}
 
 /* before/after slider */
-.ba-slider{position:relative; overflow:hidden; border-radius:var(--radius-md); cursor:ew-resize; user-select:none;}
+.ba-slider{position:relative; overflow:hidden; border-radius:var(--radius-md); cursor:ew-resize; user-select:none; touch-action:none;}
 .ba-slider img{display:block; width:100%; height:100%; object-fit:cover; user-select:none; pointer-events:none;}
 .ba-before{position:absolute; inset:0; overflow:hidden; clip-path:inset(0 50% 0 0);}
 .ba-handle{
@@ -290,6 +292,7 @@ input:focus, select:focus, textarea:focus{
 .tilt-card{transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease; transform-style:preserve-3d;}
 
 .sparkle{position:absolute; border-radius:50%; background:var(--blue-300); pointer-events:none; animation:sparkleTwinkle 2.6s ease-in-out infinite;}
+@media (max-width:767px){ .sparkle{display:none;} }
 
 .marquee-track{display:flex; gap:3rem; width:max-content; animation:drift 28s linear infinite;}
 .marquee-wrap{overflow:hidden; -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);}

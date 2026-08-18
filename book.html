@@ -134,11 +134,10 @@
            custom question configured on his event type), so we don't
            duplicate those fields here. -->
       <div class="surface p-6 md:p-8 reveal in" id="calendarSection">
-        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <p class="text-xs font-bold text-[var(--blue-300)]">PICK A DAY &amp; TIME</p>
-          <span class="chip text-[10px] py-1.5">🔗 Synced to Shiloh's Google Calendar via Calendly</span>
+        <p class="text-xs font-bold text-[var(--blue-300)] mb-4">PICK A DAY &amp; TIME</p>
+        <div class="rounded-2xl overflow-hidden bg-white">
+          <div class="calendly-inline-widget" data-url="https://calendly.com/apostello-business/client-booking?hide_gdpr_banner=1&primary_color=2e9bff" style="min-width:280px;height:750px;"></div>
         </div>
-        <div class="calendly-inline-widget" data-url="https://calendly.com/apostello-business/client-booking?hide_gdpr_banner=1&background_color=0b1220&text_color=f5f8fc&primary_color=2e9bff" style="min-width:280px;height:750px;"></div>
       </div>
     </div>
 
@@ -156,16 +155,12 @@
   </div>
 </section>
 
-<footer class="py-10 pb-28 lg:pb-10 border-t border-white/[0.06] mt-10">
+<footer class="py-10 border-t border-white/[0.06] mt-10">
   <div class="max-w-7xl mx-auto px-5 md:px-8 text-center text-xs text-[var(--muted-2)]">
     © <span data-year></span> Apostello Detailing · Serving Franklin County &amp; surrounding areas
   </div>
 </footer>
 
-<div class="sticky-book lg:hidden px-5 py-4 flex items-center justify-between gap-4">
-  <span class="font-display text-2xl text-[var(--gold-400)] shrink-0">$<span id="totalPriceMobile">150</span></span>
-  <a href="#calendarSection" class="btn btn-primary flex-1 justify-center">Continue Booking</a>
-</div>
 
 <script src="js/site-data.js"></script>
 <script src="js/site-common.js"></script>
@@ -270,7 +265,6 @@
     document.getElementById('summaryLines').innerHTML = lines.map(([label, price]) =>
       `<div class="flex justify-between"><span>${label}</span><span class="text-[var(--white)] font-semibold">$${money(price)}</span></div>`).join('');
     document.getElementById('totalPrice').textContent = money(total);
-    document.getElementById('totalPriceMobile').textContent = money(total);
     document.getElementById('totalSuffix').textContent = suffix;
     document.getElementById('freqNote').textContent = freq === 'once'
       ? 'Pay once, no commitment.'

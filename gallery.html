@@ -73,8 +73,6 @@
         <img src="images/gallery/interior-before.jpg" alt="Before detail" style="object-position:center 30%;">
       </div>
       <div class="ba-handle" style="left:50%;"></div>
-      <span class="absolute top-4 left-4 z-[2] chip text-[10px] py-1.5" style="pointer-events:none;">BEFORE</span>
-      <span class="absolute top-4 right-4 z-[2] chip text-[10px] py-1.5" style="pointer-events:none; border-color:var(--blue-400);">AFTER</span>
       <span class="absolute bottom-4 left-1/2 -translate-x-1/2 z-[2] drag-hint" style="pointer-events:none; background:rgba(5,7,12,.55); backdrop-filter:blur(8px); padding:.4rem .8rem; border-radius:999px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M1 7l3-3M1 7l3 3M13 7l-3-3M13 7l-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Drag to compare</span>
     </div>
   </div>
@@ -87,15 +85,12 @@
   </div>
 </section>
 
-<footer class="py-10 pb-28 lg:pb-10 border-t border-white/[0.06]">
+<footer class="py-10 border-t border-white/[0.06]">
   <div class="max-w-7xl mx-auto px-5 md:px-8 text-center text-xs text-[var(--muted-2)]">
     © <span data-year></span> Apostello Detailing · Serving Franklin County &amp; surrounding areas
   </div>
 </footer>
 
-<div class="sticky-book lg:hidden px-5 py-4">
-  <a href="book.html" class="btn btn-primary w-full justify-center">Book Now — Get Instant Price</a>
-</div>
 
 <script src="js/site-data.js"></script>
 <script src="js/site-common.js"></script>
@@ -108,10 +103,16 @@ document.querySelectorAll('[data-ba]').forEach(el => {
   const handle = el.querySelector('.ba-handle');
   let dragging = false;
   const setPct = (pct) => { pct = Math.max(0,Math.min(100,pct)); before.style.clipPath = `inset(0 ${100 - pct}% 0 0)`; handle.style.left = pct+'%'; };
-  el.addEventListener('pointerdown', () => dragging = true);
-  window.addEventListener('pointerup', () => dragging = false);
+  el.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    el.setPointerCapture(e.pointerId);
+    setPct(((e.clientX - el.getBoundingClientRect().left) / el.getBoundingClientRect().width) * 100);
+  });
+  el.addEventListener('pointerup', () => dragging = false);
+  el.addEventListener('pointercancel', () => dragging = false);
   el.addEventListener('pointermove', (e) => {
     if (!dragging) return;
+    e.preventDefault();
     const rect = el.getBoundingClientRect();
     setPct(((e.clientX - rect.left) / rect.width) * 100);
   });
