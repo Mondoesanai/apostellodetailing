@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Now — Apostello Detailing</title>
+<meta name="description" content="Get an instant price and book your mobile detail online — no back-and-forth texting.">
+<link rel="icon" href="images/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-wash">
+<script src="js/site-audio.js"></script>
+
+<!-- ============ NAV ============ -->
+<header class="fixed top-0 left-0 right-0 z-[7000] backdrop-blur-xl bg-[#05070c]/80 border-b border-white/[0.06]">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 h-24 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+    <nav class="hidden lg:flex items-center gap-8 justify-self-start col-start-1">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link">Services &amp; Pricing</a>
+      <a href="gallery.html" class="nav-link">Gallery</a>
+    </nav>
+    <a href="index.html" class="flex flex-col items-center gap-1 justify-self-center shrink-0 col-start-2">
+      <img src="images/logo.png" alt="Apostello Detailing" class="h-14 w-14 rounded-full glow-ring">
+      <span class="font-display nav-wordmark">APOSTELLO <span class="text-[var(--blue-400)]">DETAILING</span></span>
+    </a>
+    <div class="hidden lg:flex items-center gap-8 justify-self-end col-start-3">
+      <nav class="flex items-center gap-8">
+        <a href="about.html" class="nav-link">About</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="referral.html" class="nav-link">Referral</a>
+      </nav>
+      <a href="book.html" class="btn btn-primary">Book Now</a>
+    </div>
+    <button id="navToggle" aria-expanded="false" class="lg:hidden justify-self-end col-start-3 w-11 h-11 flex items-center justify-center rounded-full border border-white/10 text-white">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div id="mobileNav" class="hidden lg:hidden flex-col gap-1 px-5 pb-5 border-t border-white/[0.06]">
+    <a href="index.html" class="nav-link py-3">Home</a>
+    <a href="services.html" class="nav-link py-3">Services &amp; Pricing</a>
+    <a href="gallery.html" class="nav-link py-3">Gallery</a>
+    <a href="about.html" class="nav-link py-3">About</a>
+    <a href="faq.html" class="nav-link py-3">FAQ</a>
+    <a href="referral.html" class="nav-link py-3">Referral</a>
+    <a href="book.html" class="btn btn-primary mt-3 justify-center">Book Now</a>
+  </div>
+</header>
+
+<section class="pt-32 pb-6">
+  <div class="max-w-4xl mx-auto px-5 md:px-8 text-center reveal in">
+    <p class="eyebrow mb-3">Book In Under 2 Minutes</p>
+    <h1 class="font-display text-4xl md:text-6xl mb-4">GET YOUR PRICE.<br>PICK YOUR TIME.</h1>
+    <p class="text-[var(--muted)] max-w-xl mx-auto">Answer a few quick questions and we'll show your price instantly — then grab an open slot straight off the calendar.</p>
+  </div>
+</section>
+
+<section class="py-10">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-[1fr_380px] gap-10 items-start min-w-0">
+
+    <div class="flex flex-col gap-8 min-w-0">
+
+      <!-- STEP 1: service type -->
+      <div class="surface p-6 md:p-8 reveal in">
+        <p class="text-xs font-bold text-[var(--blue-300)] mb-4">STEP 1 — WHAT NEEDS DETAILING? <span class="text-[var(--muted-2)] font-normal normal-case">(tap to choose)</span></p>
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" class="chip selected justify-center py-4 text-base tap-hint" data-veh="car">🚗 Car / SUV / Truck</button>
+          <button type="button" class="chip justify-center py-4 text-base" data-veh="boat">⛵ Boat</button>
+        </div>
+      </div>
+
+      <!-- CAR FLOW -->
+      <div id="carFlow" class="flex flex-col gap-8">
+        <div class="surface p-6 md:p-8 reveal in">
+          <p class="text-xs font-bold text-[var(--blue-300)] mb-4">STEP 2 — CHOOSE YOUR PACKAGE <span class="text-[var(--muted-2)] font-normal normal-case">(tap a card to select)</span></p>
+          <div class="grid md:grid-cols-3 gap-4" id="pkgCards"></div>
+        </div>
+
+        <div class="surface p-6 md:p-8 reveal in">
+          <p class="text-xs font-bold text-[var(--blue-300)] mb-4">STEP 3 — VEHICLE TYPE</p>
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" id="upchargeBox" class="mt-1 w-5 h-5 accent-[#2e9bff]">
+            <span class="text-sm text-[var(--muted)]">Truck with a bed, a vehicle with a 3rd row of seats, or a large-trunk SUV <span class="text-[var(--white)] font-semibold">(+$40)</span></span>
+          </label>
+        </div>
+
+        <div class="surface p-6 md:p-8 reveal in">
+          <p class="text-xs font-bold text-[var(--blue-300)] mb-4">STEP 4 — ADD-ONS (OPTIONAL)</p>
+          <div class="grid sm:grid-cols-2 gap-3" id="addonList"></div>
+        </div>
+
+        <div class="surface p-6 md:p-8 reveal in">
+          <p class="text-xs font-bold text-[var(--blue-300)] mb-4">STEP 5 — ONE-TIME OR RECURRING?</p>
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <button type="button" class="chip selected justify-center" data-freq="once">One-Time</button>
+            <button type="button" class="chip justify-center" data-freq="monthly">Monthly</button>
+            <button type="button" class="chip justify-center" data-freq="biweekly">Bi-Weekly</button>
+          </div>
+          <p id="freqNote" class="text-xs text-[var(--muted-2)]"></p>
+        </div>
+      </div>
+
+      <!-- BOAT FLOW -->
+      <div id="boatFlow" class="hidden flex-col gap-8">
+        <div class="surface p-6 md:p-8 reveal in">
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-xs font-bold text-[var(--blue-300)]">STEP 2 — BOAT LENGTH</p>
+            <span class="drag-hint"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M1 7l3-3M1 7l3 3M13 7l-3-3M13 7l-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Drag the slider</span>
+          </div>
+          <input type="range" min="12" max="45" value="20" id="boatFt" class="w-full accent-[#2e9bff] mb-3">
+          <div class="flex justify-between text-sm text-[var(--muted)]">
+            <span>12 ft</span>
+            <span class="font-display text-2xl text-[var(--gold-400)]"><span id="boatFtVal">20</span> ft</span>
+            <span>45 ft</span>
+          </div>
+          <p class="text-xs text-[var(--muted-2)] mt-4">$15 per foot · includes exterior wash, hull cleaning, spray wax &amp; exterior shine · mobile — we come to your marina or driveway</p>
+        </div>
+      </div>
+
+      <!-- ZIP CHECK -->
+      <div class="surface p-6 md:p-8 reveal in">
+        <p class="text-xs font-bold text-[var(--blue-300)] mb-4">SERVICE AREA CHECK</p>
+        <div class="flex gap-3">
+          <input type="text" id="zipInput" placeholder="Enter your ZIP code" maxlength="5" inputmode="numeric" class="max-w-[220px]">
+          <button type="button" id="zipBtn" class="btn btn-ghost shrink-0">Check</button>
+        </div>
+        <p id="zipResult" class="text-sm mt-4"></p>
+      </div>
+
+      <!-- CALENDAR
+           This is a working demo calendar (fake availability) so the booking flow
+           is fully clickable right now. Once Shiloh's Calendly account exists and
+           is connected to his Google Calendar, replace this block with:
+
+           <div class="calendly-inline-widget" data-url="https://calendly.com/YOUR-LINK-HERE"
+                style="min-width:320px;height:700px;"></div>
+           <script src="https://assets.calendly.com/assets/external/widget.js"></script>
+
+           That's the entire swap — Calendly handles real-time availability,
+           double-booking prevention, confirmation emails/texts, and reminders. -->
+      <div class="surface p-6 md:p-8 reveal in" id="calendarSection">
+        <div class="flex items-center justify-between mb-1 flex-wrap gap-2">
+          <p class="text-xs font-bold text-[var(--blue-300)]">PICK A DAY &amp; TIME</p>
+          <span class="chip text-[10px] py-1.5">🔗 Syncs to Shiloh's Google Calendar via Calendly</span>
+        </div>
+        <p class="drag-hint mb-3"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M1 7l3-3M1 7l3 3M13 7l-3-3M13 7l-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Swipe for more dates, then tap a time</p>
+        <div id="dayPicker" class="flex gap-3 overflow-x-auto pb-3 mb-5"></div>
+        <div id="timePicker" class="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-6"></div>
+
+        <div class="grid sm:grid-cols-2 gap-3 mb-4">
+          <input type="text" id="custName" placeholder="Full name">
+          <input type="tel" id="custPhone" placeholder="Phone number">
+        </div>
+        <input type="text" id="custAddress" placeholder="Service address (where we'll meet you)" class="mb-6">
+
+        <button type="button" id="confirmBtn" disabled class="btn btn-primary w-full justify-center py-4 text-base opacity-40 cursor-not-allowed">Select a day &amp; time to continue</button>
+
+        <div id="confirmedPanel" class="hidden mt-6 p-6 rounded-2xl border border-[var(--blue-400)]/40 bg-[var(--blue-900)]/40 text-center">
+          <p class="font-display text-2xl mb-2 text-[var(--blue-300)]">YOU'RE BOOKED! ✓</p>
+          <p class="text-sm text-[var(--muted)] mb-1" id="confirmSummary"></p>
+          <p class="text-xs text-[var(--muted-2)] mt-3">A confirmation + reminder text/email will be sent automatically before your appointment.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STICKY SUMMARY -->
+    <div class="surface-float p-6 md:p-7 lg:sticky lg:top-28 reveal in">
+      <p class="eyebrow mb-4">Your Estimate</p>
+      <div id="summaryLines" class="flex flex-col gap-2 text-sm text-[var(--muted)] mb-4"></div>
+      <div class="border-t border-white/10 pt-4 flex items-end justify-between mb-2">
+        <span class="text-sm text-[var(--muted)]">Total</span>
+        <span class="font-display text-5xl text-[var(--gold-400)]">$<span id="totalPrice">150</span></span>
+      </div>
+      <p id="totalSuffix" class="text-xs text-[var(--muted-2)] mb-6"></p>
+      <a href="#calendarSection" class="btn btn-primary w-full justify-center">Continue to Calendar ↓</a>
+    </div>
+  </div>
+</section>
+
+<footer class="py-10 pb-28 lg:pb-10 border-t border-white/[0.06] mt-10">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 text-center text-xs text-[var(--muted-2)]">
+    © <span data-year></span> Apostello Detailing · Serving Franklin County &amp; surrounding areas
+  </div>
+</footer>
+
+<div class="sticky-book lg:hidden px-5 py-4 flex items-center justify-between gap-4">
+  <span class="font-display text-2xl text-[var(--gold-400)] shrink-0">$<span id="totalPriceMobile">150</span></span>
+  <a href="#calendarSection" class="btn btn-primary flex-1 justify-center">Continue Booking</a>
+</div>
+
+<script src="js/site-data.js"></script>
+<script src="js/site-common.js"></script>
+<script>
+(function(){
+  let mode = 'car';
+  let selectedPkg = 'better';
+  let upcharge = false;
+  let selectedAddons = new Set();
+  let freq = 'once';
+  let boatFt = 20;
+  let selectedDay = null, selectedTime = null;
+
+  const carFlow = document.getElementById('carFlow');
+  const boatFlow = document.getElementById('boatFlow');
+
+  // vehicle toggle
+  document.querySelectorAll('[data-veh]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-veh]').forEach(x => { x.classList.remove('selected'); x.classList.remove('tap-hint'); });
+    b.classList.add('selected');
+    mode = b.dataset.veh;
+    carFlow.classList.toggle('hidden', mode !== 'car');
+    carFlow.classList.toggle('flex', mode === 'car');
+    boatFlow.classList.toggle('hidden', mode !== 'boat');
+    boatFlow.classList.toggle('flex', mode === 'boat');
+    render();
+  }));
+
+  // package cards
+  const pkgCards = document.getElementById('pkgCards');
+  pkgCards.innerHTML = Object.entries(CAR_PACKAGES).map(([key, p]) => `
+    <button type="button" data-pkg="${key}" class="tier-card text-left p-5 rounded-2xl border ${key==='better' ? 'tier-best border-[var(--gold-400)]/40' : 'border-white/10'} bg-white/[0.02] ${key===selectedPkg ? 'ring-2 ring-[var(--blue-400)]' : ''}">
+      <p class="text-xs text-[var(--muted)] mb-1">${p.name}${p.featured ? ' ★' : ''}</p>
+      <p class="font-display text-3xl mb-2">$${p.price}</p>
+      <ul class="text-xs text-[var(--muted)] space-y-1">${p.features.map(f=>`<li>• ${f}</li>`).join('')}</ul>
+    </button>`).join('');
+  pkgCards.querySelectorAll('[data-pkg]').forEach(b => b.addEventListener('click', () => {
+    selectedPkg = b.dataset.pkg;
+    pkgCards.querySelectorAll('[data-pkg]').forEach(x => x.classList.remove('ring-2','ring-[var(--blue-400)]'));
+    b.classList.add('ring-2','ring-[var(--blue-400)]');
+    render();
+  }));
+
+  // upcharge
+  document.getElementById('upchargeBox').addEventListener('change', (e) => { upcharge = e.target.checked; render(); });
+
+  // addons
+  const addonList = document.getElementById('addonList');
+  addonList.innerHTML = Object.entries(ADD_ONS).map(([key, a]) => `
+    <label class="chip cursor-pointer justify-between" data-addon="${key}">
+      <span>${a.name} <span class="text-[var(--muted-2)]">— ${a.blurb}</span></span>
+      <span class="font-bold text-[var(--white)]">+$${a.price}</span>
+    </label>`).join('');
+  addonList.querySelectorAll('[data-addon]').forEach(el => el.addEventListener('click', () => {
+    const key = el.dataset.addon;
+    if (selectedAddons.has(key)) { selectedAddons.delete(key); el.classList.remove('selected'); }
+    else { selectedAddons.add(key); el.classList.add('selected'); }
+    render();
+  }));
+
+  // frequency
+  document.querySelectorAll('[data-freq]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-freq]').forEach(x => x.classList.remove('selected'));
+    b.classList.add('selected');
+    freq = b.dataset.freq;
+    render();
+  }));
+
+  // boat slider
+  const boatFtInput = document.getElementById('boatFt');
+  boatFtInput.addEventListener('input', () => {
+    boatFt = parseInt(boatFtInput.value, 10);
+    document.getElementById('boatFtVal').textContent = boatFt;
+    render();
+  });
+
+  function money(n){ return n.toLocaleString('en-US'); }
+
+  function render(){
+    const lines = [];
+    let total = 0;
+    let suffix = '';
+
+    if (mode === 'car') {
+      if (freq === 'once') {
+        const pkg = CAR_PACKAGES[selectedPkg];
+        lines.push([`${pkg.name} Package`, pkg.price]);
+        total += pkg.price;
+      } else {
+        const plan = RECURRING_PLANS[freq];
+        lines.push([`${plan.name} (per visit)`, plan.pricePerVisit]);
+        total += plan.pricePerVisit;
+        suffix = `Billed ${plan.cadence} · save $${plan.save} vs one-time Better package`;
+      }
+      if (upcharge) { lines.push(['Truck bed / 3rd row / large SUV', VEHICLE_UPCHARGE]); total += VEHICLE_UPCHARGE; }
+      selectedAddons.forEach(key => { const a = ADD_ONS[key]; lines.push([a.name, a.price]); total += a.price; });
+    } else {
+      lines.push([`Boat detailing — ${boatFt} ft × $${BOAT_RATE_PER_FT}/ft`, boatFt * BOAT_RATE_PER_FT]);
+      total = boatFt * BOAT_RATE_PER_FT;
+      suffix = 'Mobile service — we come to your marina, dock, or driveway';
+    }
+
+    document.getElementById('summaryLines').innerHTML = lines.map(([label, price]) =>
+      `<div class="flex justify-between"><span>${label}</span><span class="text-[var(--white)] font-semibold">$${money(price)}</span></div>`).join('');
+    document.getElementById('totalPrice').textContent = money(total);
+    document.getElementById('totalPriceMobile').textContent = money(total);
+    document.getElementById('totalSuffix').textContent = suffix;
+    document.getElementById('freqNote').textContent = freq === 'once'
+      ? 'Pay once, no commitment.'
+      : `Locks in $${RECURRING_PLANS[freq].pricePerVisit}/visit — cancel anytime.`;
+  }
+  render();
+
+  // ---- ZIP CHECK ----
+  document.getElementById('zipBtn').addEventListener('click', checkZip);
+  document.getElementById('zipInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') checkZip(); });
+  function checkZip(){
+    const val = document.getElementById('zipInput').value.trim();
+    const resultEl = document.getElementById('zipResult');
+    if (!/^\d{5}$/.test(val)) { resultEl.innerHTML = '<span class="text-[var(--gold-400)]">Enter a valid 5-digit ZIP code.</span>'; return; }
+    if (SERVICE_AREA_ZIPS.includes(val)) {
+      resultEl.innerHTML = '<span class="text-[var(--blue-300)]">✓ You\'re in our service area — mobile detailing available.</span>';
+    } else {
+      resultEl.innerHTML = '<span class="text-[var(--gold-400)]">This ZIP is outside our current radius — message us and we\'ll confirm availability.</span>';
+    }
+  }
+
+  // ---- MOCK CALENDAR (demo — wire to live Calendly/Google Calendar at launch) ----
+  const dayPicker = document.getElementById('dayPicker');
+  const timePicker = document.getElementById('timePicker');
+  const days = [];
+  const today = new Date();
+  for (let i = 1; i <= 14; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    if (d.getDay() === 0) continue; // closed Sundays (assumption)
+    days.push(d);
+  }
+  const busyDayIdx = new Set([2, 6, 9]);
+  dayPicker.innerHTML = days.map((d, i) => `
+    <button type="button" data-day="${i}" ${busyDayIdx.has(i) ? 'disabled' : ''}
+      class="chip flex-col items-center justify-center min-w-[68px] py-3 ${busyDayIdx.has(i) ? 'opacity-30 cursor-not-allowed' : ''}">
+      <span class="text-[10px] uppercase">${d.toLocaleDateString('en-US',{weekday:'short'})}</span>
+      <span class="font-display text-lg leading-none mt-1">${d.getDate()}</span>
+    </button>`).join('');
+
+  const allSlots = ['9:00 AM','10:30 AM','12:00 PM','1:30 PM','3:00 PM','4:30 PM'];
+  dayPicker.querySelectorAll('[data-day]').forEach(btn => btn.addEventListener('click', () => {
+    dayPicker.querySelectorAll('[data-day]').forEach(x => x.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedDay = days[parseInt(btn.dataset.day, 10)];
+    selectedTime = null;
+    updateConfirmState();
+    const busySlots = new Set([Math.floor(Math.random()*allSlots.length)]);
+    timePicker.innerHTML = allSlots.map((t, i) => `
+      <button type="button" data-time="${t}" ${busySlots.has(i) ? 'disabled' : ''}
+        class="chip justify-center py-3 ${busySlots.has(i) ? 'opacity-30 cursor-not-allowed' : ''}">${t}</button>`).join('');
+    timePicker.querySelectorAll('[data-time]').forEach(tb => tb.addEventListener('click', () => {
+      timePicker.querySelectorAll('[data-time]').forEach(x => x.classList.remove('selected'));
+      tb.classList.add('selected');
+      selectedTime = tb.dataset.time;
+      updateConfirmState();
+    }));
+  }));
+
+  const confirmBtn = document.getElementById('confirmBtn');
+  function updateConfirmState(){
+    const ready = selectedDay && selectedTime;
+    confirmBtn.disabled = !ready;
+    confirmBtn.classList.toggle('opacity-40', !ready);
+    confirmBtn.classList.toggle('cursor-not-allowed', !ready);
+    confirmBtn.textContent = ready ? 'Confirm Booking' : 'Select a day & time to continue';
+  }
+
+  confirmBtn.addEventListener('click', () => {
+    if (confirmBtn.disabled) return;
+    const name = document.getElementById('custName').value || 'there';
+    document.getElementById('confirmedPanel').classList.remove('hidden');
+    document.getElementById('confirmSummary').textContent =
+      `Thanks, ${name}! ${selectedDay.toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric'})} at ${selectedTime} — $${document.getElementById('totalPrice').textContent} total.`;
+    confirmBtn.classList.add('hidden');
+    document.getElementById('confirmedPanel').scrollIntoView({behavior:'smooth', block:'center'});
+  });
+})();
+</script>
+</body>
+</html>

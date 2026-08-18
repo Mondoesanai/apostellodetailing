@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — Apostello Detailing</title>
+<meta name="description" content="Frequently asked questions about Apostello Detailing's mobile car and boat detailing services.">
+<link rel="icon" href="images/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-wash">
+<script src="js/site-audio.js"></script>
+
+<header class="fixed top-0 left-0 right-0 z-[7000] backdrop-blur-xl bg-[#05070c]/80 border-b border-white/[0.06]">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 h-24 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+    <nav class="hidden lg:flex items-center gap-8 justify-self-start col-start-1">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link">Services &amp; Pricing</a>
+      <a href="gallery.html" class="nav-link">Gallery</a>
+    </nav>
+    <a href="index.html" class="flex flex-col items-center gap-1 justify-self-center shrink-0 col-start-2">
+      <img src="images/logo.png" alt="Apostello Detailing" class="h-14 w-14 rounded-full glow-ring">
+      <span class="font-display nav-wordmark">APOSTELLO <span class="text-[var(--blue-400)]">DETAILING</span></span>
+    </a>
+    <div class="hidden lg:flex items-center gap-8 justify-self-end col-start-3">
+      <nav class="flex items-center gap-8">
+        <a href="about.html" class="nav-link">About</a>
+        <a href="faq.html" class="nav-link active">FAQ</a>
+        <a href="referral.html" class="nav-link">Referral</a>
+      </nav>
+      <a href="book.html" class="btn btn-primary">Book Now</a>
+    </div>
+    <button id="navToggle" aria-expanded="false" class="lg:hidden justify-self-end col-start-3 w-11 h-11 flex items-center justify-center rounded-full border border-white/10 text-white">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div id="mobileNav" class="hidden lg:hidden flex-col gap-1 px-5 pb-5 border-t border-white/[0.06]">
+    <a href="index.html" class="nav-link py-3">Home</a>
+    <a href="services.html" class="nav-link py-3">Services &amp; Pricing</a>
+    <a href="gallery.html" class="nav-link py-3">Gallery</a>
+    <a href="about.html" class="nav-link py-3">About</a>
+    <a href="faq.html" class="nav-link py-3 active">FAQ</a>
+    <a href="referral.html" class="nav-link py-3">Referral</a>
+    <a href="book.html" class="btn btn-primary mt-3 justify-center">Book Now</a>
+  </div>
+</header>
+
+<section class="pt-32 pb-10">
+  <div class="max-w-4xl mx-auto px-5 md:px-8 text-center reveal in">
+    <p class="eyebrow mb-3">Good To Know</p>
+    <h1 class="font-display text-4xl md:text-6xl mb-4">FREQUENTLY ASKED<br>QUESTIONS</h1>
+  </div>
+</section>
+
+<section class="py-10 pb-20">
+  <div class="max-w-3xl mx-auto px-5 md:px-8 flex flex-col gap-3" id="faqList"></div>
+</section>
+
+<section class="py-16 bg-wash-panel border-y border-white/[0.06]">
+  <div class="max-w-3xl mx-auto px-5 md:px-8 text-center reveal">
+    <h2 class="font-display text-3xl md:text-4xl mb-4">STILL HAVE A QUESTION?</h2>
+    <p class="text-[var(--muted)] mb-7">Send a message and we'll get back to you fast.</p>
+    <a href="book.html" class="btn btn-primary text-base px-8 py-4">Book Now Instead →</a>
+  </div>
+</section>
+
+<footer class="py-10 pb-28 lg:pb-10 border-t border-white/[0.06]">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 text-center text-xs text-[var(--muted-2)]">
+    © <span data-year></span> Apostello Detailing · Serving Franklin County &amp; surrounding areas
+  </div>
+</footer>
+
+<div class="sticky-book lg:hidden px-5 py-4">
+  <a href="book.html" class="btn btn-primary w-full justify-center">Book Now — Get Instant Price</a>
+</div>
+
+<script src="js/site-common.js"></script>
+<script>
+const FAQS = [
+  { q: "What's included in each package?", a: "Good ($100) covers interior vacuum & wipe down, basic interior cleaning, exterior wash, and wheels & tires. Better ($150) steps up to a full deep interior detail plus a thorough exterior wash. Best ($200) is the full treatment — every surface and crevice, plus a premium exterior wash & finish. Full breakdowns are on the Services & Pricing page." },
+  { q: "How long does a detail take?", a: "Most Good and Better packages run 1–2 hours. Best packages and add-ons like carnauba wax or full upholstery cleaning can take closer to 2–3.5 hours depending on vehicle size and condition." },
+  { q: "Do I need to be home during the appointment?", a: "Nope — as long as we can access your vehicle (unlocked, or keys available) and there's a nearby water/power source if needed, you don't have to be present. Just leave a note in the booking form with any instructions." },
+  { q: "What's the extra $40 upcharge for?", a: "Vehicles with a truck bed, an extra row of seats, or a large trunk (like most SUVs) take meaningfully longer to detail properly, so those add a flat $40 to any package." },
+  { q: "How is boat detailing priced?", a: "Boats are priced at $15 per foot of length, which includes an exterior wash, hull cleaning, spray wax, and exterior shine & finish. A 20ft boat runs about $300 — see the full example pricing table on the Services page." },
+  { q: "Do you travel to my area?", a: "Apostello Detailing serves Franklin County and the surrounding areas. Use the ZIP code checker on the Book Now page to confirm — if you're just outside the radius, message us and we'll see what we can do." },
+  { q: "Can I set up a recurring cleaning instead of a one-time detail?", a: "Yes — Monthly and Bi-Weekly maintenance plans are available at a discounted per-visit rate versus a one-time Better package. You can start, pause, or cancel anytime." },
+  { q: "How do I book, and will I get a confirmation?", a: "Head to the Book Now page, get your instant price, and pick an open slot straight off the calendar. You'll get an automatic confirmation plus a reminder before your appointment — no phone tag required." },
+  { q: "What if it's raining on my scheduled day?", a: "For exterior work and boat details, we may need to reschedule around bad weather. If that happens, you'll be contacted to find the next available slot — no charge for weather-related rescheduling." },
+];
+
+document.getElementById('faqList').innerHTML = FAQS.map((f, i) => `
+  <div class="surface reveal in overflow-hidden">
+    <button type="button" class="faq-trigger w-full flex items-center justify-between gap-4 text-left p-6" data-idx="${i}">
+      <span class="font-bold text-sm md:text-base">${f.q}</span>
+      <svg class="faq-icon shrink-0 transition-transform duration-200" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 7l6 6 6-6" stroke="#4cbaff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="faq-panel px-6 overflow-hidden transition-all duration-300" style="max-height:0;">
+      <p class="text-sm text-[var(--muted)] pb-6 leading-relaxed">${f.a}</p>
+    </div>
+  </div>`).join('');
+
+document.querySelectorAll('.faq-trigger').forEach(btn => btn.addEventListener('click', () => {
+  const panel = btn.nextElementSibling;
+  const icon = btn.querySelector('.faq-icon');
+  const isOpen = panel.style.maxHeight !== '0px' && panel.style.maxHeight !== '';
+  document.querySelectorAll('.faq-panel').forEach(p => p.style.maxHeight = '0px');
+  document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+  if (!isOpen) { panel.style.maxHeight = panel.scrollHeight + 'px'; icon.style.transform = 'rotate(180deg)'; }
+}));
+</script>
+</body>
+</html>

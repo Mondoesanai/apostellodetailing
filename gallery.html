@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before &amp; After Gallery — Apostello Detailing</title>
+<meta name="description" content="See real before and after results from Apostello Detailing.">
+<link rel="icon" href="images/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-wash">
+<script src="js/site-audio.js"></script>
+
+<header class="fixed top-0 left-0 right-0 z-[7000] backdrop-blur-xl bg-[#05070c]/80 border-b border-white/[0.06]">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 h-24 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+    <nav class="hidden lg:flex items-center gap-8 justify-self-start col-start-1">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="services.html" class="nav-link">Services &amp; Pricing</a>
+      <a href="gallery.html" class="nav-link active">Gallery</a>
+    </nav>
+    <a href="index.html" class="flex flex-col items-center gap-1 justify-self-center shrink-0 col-start-2">
+      <img src="images/logo.png" alt="Apostello Detailing" class="h-14 w-14 rounded-full glow-ring">
+      <span class="font-display nav-wordmark">APOSTELLO <span class="text-[var(--blue-400)]">DETAILING</span></span>
+    </a>
+    <div class="hidden lg:flex items-center gap-8 justify-self-end col-start-3">
+      <nav class="flex items-center gap-8">
+        <a href="about.html" class="nav-link">About</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="referral.html" class="nav-link">Referral</a>
+      </nav>
+      <a href="book.html" class="btn btn-primary">Book Now</a>
+    </div>
+    <button id="navToggle" aria-expanded="false" class="lg:hidden justify-self-end col-start-3 w-11 h-11 flex items-center justify-center rounded-full border border-white/10 text-white">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div id="mobileNav" class="hidden lg:hidden flex-col gap-1 px-5 pb-5 border-t border-white/[0.06]">
+    <a href="index.html" class="nav-link py-3">Home</a>
+    <a href="services.html" class="nav-link py-3">Services &amp; Pricing</a>
+    <a href="gallery.html" class="nav-link py-3 active">Gallery</a>
+    <a href="about.html" class="nav-link py-3">About</a>
+    <a href="faq.html" class="nav-link py-3">FAQ</a>
+    <a href="referral.html" class="nav-link py-3">Referral</a>
+    <a href="book.html" class="btn btn-primary mt-3 justify-center">Book Now</a>
+  </div>
+</header>
+
+<section class="pt-32 pb-10">
+  <div class="max-w-4xl mx-auto px-5 md:px-8 text-center reveal in">
+    <p class="eyebrow mb-3">Real Results</p>
+    <h1 class="font-display text-4xl md:text-6xl mb-4">SEE THE DIFFERENCE</h1>
+    <p class="text-[var(--muted)] max-w-xl mx-auto">Tap the speaker on any clip to hear it — the site music dips out automatically while it plays.</p>
+  </div>
+</section>
+
+<section class="py-10">
+  <div class="max-w-6xl mx-auto px-5 md:px-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="videoGrid"></div>
+</section>
+
+<section class="py-16 bg-wash-panel border-y border-white/[0.06]">
+  <div class="max-w-5xl mx-auto px-5 md:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+      <p class="eyebrow mb-3">Real Job, Real Truck</p>
+      <h2 class="font-display text-3xl md:text-4xl mb-3">DRAG TO COMPARE</h2>
+      <p class="text-[var(--muted)]">A real interior detail — drag the handle to see the full before &amp; after.</p>
+    </div>
+    <div class="ba-slider surface reveal" data-ba style="aspect-ratio: 16/8; box-shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 30px 60px -20px rgba(0,0,0,.85);">
+      <img src="images/gallery/interior-after.jpg" alt="After detail" style="object-position:center 30%;">
+      <div class="ba-before">
+        <img src="images/gallery/interior-before.jpg" alt="Before detail" style="object-position:center 30%;">
+      </div>
+      <div class="ba-handle" style="left:50%;"></div>
+      <span class="absolute top-4 left-4 z-[2] chip text-[10px] py-1.5" style="pointer-events:none;">BEFORE</span>
+      <span class="absolute top-4 right-4 z-[2] chip text-[10px] py-1.5" style="pointer-events:none; border-color:var(--blue-400);">AFTER</span>
+      <span class="absolute bottom-4 left-1/2 -translate-x-1/2 z-[2] drag-hint" style="pointer-events:none; background:rgba(5,7,12,.55); backdrop-filter:blur(8px); padding:.4rem .8rem; border-radius:999px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M1 7l3-3M1 7l3 3M13 7l-3-3M13 7l-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Drag to compare</span>
+    </div>
+  </div>
+</section>
+
+<section class="py-16">
+  <div class="max-w-3xl mx-auto px-5 md:px-8 text-center reveal">
+    <h2 class="font-display text-3xl md:text-4xl mb-4">WANT RESULTS LIKE THESE?</h2>
+    <a href="book.html" class="btn btn-primary text-base px-8 py-4">Get My Instant Price &amp; Book</a>
+  </div>
+</section>
+
+<footer class="py-10 pb-28 lg:pb-10 border-t border-white/[0.06]">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 text-center text-xs text-[var(--muted-2)]">
+    © <span data-year></span> Apostello Detailing · Serving Franklin County &amp; surrounding areas
+  </div>
+</footer>
+
+<div class="sticky-book lg:hidden px-5 py-4">
+  <a href="book.html" class="btn btn-primary w-full justify-center">Book Now — Get Instant Price</a>
+</div>
+
+<script src="js/site-data.js"></script>
+<script src="js/site-common.js"></script>
+<script src="js/site-video-gallery.js"></script>
+<script>
+renderVideoGallery(document.getElementById('videoGrid'), VIDEO_ITEMS);
+
+document.querySelectorAll('[data-ba]').forEach(el => {
+  const before = el.querySelector('.ba-before');
+  const handle = el.querySelector('.ba-handle');
+  let dragging = false;
+  const setPct = (pct) => { pct = Math.max(0,Math.min(100,pct)); before.style.clipPath = `inset(0 ${100 - pct}% 0 0)`; handle.style.left = pct+'%'; };
+  el.addEventListener('pointerdown', () => dragging = true);
+  window.addEventListener('pointerup', () => dragging = false);
+  el.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const rect = el.getBoundingClientRect();
+    setPct(((e.clientX - rect.left) / rect.width) * 100);
+  });
+});
+</script>
+</body>
+</html>
