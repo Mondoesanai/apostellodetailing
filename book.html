@@ -130,13 +130,18 @@
       </div>
 
       <!-- CALENDAR — live Calendly embed, synced to Shiloh's Google Calendar.
-           Calendly's own form collects name/phone/service address (via a
-           custom question configured on his event type), so we don't
-           duplicate those fields here. -->
+           Initialized via JS (not the static calendly-inline-widget class) so
+           we can prefill a summary of the customer's estimator selections
+           into a custom question on Shiloh's event — see updateCalendlyPrefill()
+           below. REQUIRES Shiloh to add an "Invitee Question" on the
+           client-booking event type (first question = maps to a1) along the
+           lines of "What are you booking? (auto-filled — please review)".
+           Without that question configured, the prefill is silently ignored
+           and Calendly just shows its normal blank form. -->
       <div class="surface p-6 md:p-8 reveal in" id="calendarSection">
         <p class="text-xs font-bold text-[var(--blue-300)] mb-4">PICK A DAY &amp; TIME</p>
         <div class="rounded-2xl overflow-hidden bg-white">
-          <div class="calendly-inline-widget" data-url="https://calendly.com/apostello-business/client-booking?hide_gdpr_banner=1&primary_color=2e9bff" style="min-width:280px;height:750px;"></div>
+          <div id="calendlyEmbed" style="min-width:280px;height:750px;"></div>
         </div>
       </div>
     </div>
@@ -166,6 +171,7 @@
 <script src="js/site-common.js"></script>
 <script>
 (function(){
+  let calendlyTimer = null;
   let mode = 'car';
   let selectedPkg = 'better';
   let upcharge = false;
@@ -269,8 +275,29 @@
     document.getElementById('freqNote').textContent = freq === 'once'
       ? 'Pay once, no commitment.'
       : `Locks in $${RECURRING_PLANS[freq].pricePerVisit}/visit — cancel anytime.`;
+
+    const summaryText = lines.map(([label, price]) => `${label} ($${money(price)})`).join(' + ') + ` — Total: $${money(total)}`;
+    scheduleCalendlyUpdate(summaryText);
   }
   render();
+
+  // ---- push the estimator selections into Calendly as a prefilled answer ----
+  // Requires Shiloh to add an "Invitee Question" on the client-booking event
+  // (first question = a1), e.g. "What are you booking? (auto-filled — please review)".
+  function scheduleCalendlyUpdate(summaryText){
+    clearTimeout(calendlyTimer);
+    calendlyTimer = setTimeout(() => initCalendly(summaryText), 500);
+  }
+  function initCalendly(summaryText){
+    if (!window.Calendly) { calendlyTimer = setTimeout(() => initCalendly(summaryText), 300); return; }
+    const container = document.getElementById('calendlyEmbed');
+    container.innerHTML = '';
+    window.Calendly.initInlineWidget({
+      url: 'https://calendly.com/apostello-business/client-booking?hide_gdpr_banner=1&primary_color=2e9bff',
+      parentElement: container,
+      prefill: { customAnswers: { a1: summaryText } },
+    });
+  }
 
   // ---- ZIP CHECK ----
   document.getElementById('zipBtn').addEventListener('click', checkZip);
