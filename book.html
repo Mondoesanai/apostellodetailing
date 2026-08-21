@@ -141,7 +141,7 @@
       <div class="surface p-6 md:p-8 reveal in" id="calendarSection">
         <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
           <p class="text-xs font-bold text-[var(--blue-300)]">PICK A DAY &amp; TIME</p>
-          <button type="button" id="refreshCalendly" class="chip text-[10px] py-1.5 hidden">🔄 Refresh with my latest picks</button>
+          <span id="syncStatus" class="chip text-[10px] py-1.5 hidden">✓ Synced with your order</span>
         </div>
         <div class="rounded-2xl overflow-hidden bg-white relative">
           <div id="calendlyLoading" class="flex flex-col items-center justify-center gap-3 py-24 text-[#4a5a70]">
@@ -181,6 +181,7 @@
   let latestSummary = '';
   let calendlyLoaded = false;
   let calendlyLoading = false;
+  let autoSyncTimer = null;
   let mode = 'car';
   let selectedPkg = 'better';
   let upcharge = false;
@@ -287,11 +288,16 @@
 
     latestSummary = lines.map(([label, price]) => `${label} ($${money(price)})`).join(' + ') + ` — Total: $${money(total)}`;
 
-    // Calendly only reloads on an explicit trigger (first view / Continue /
-    // Refresh) — reloading the whole iframe on every click was the mobile
-    // "takes forever" bug. Once loaded, just surface a visible refresh
-    // prompt instead of silently reloading behind the user's back.
-    if (calendlyLoaded) document.getElementById('refreshCalendly').classList.remove('hidden');
+    // Auto-sync into Calendly, debounced. Reloading the whole iframe on every
+    // single click was the mobile "takes forever" bug — this waits for a
+    // short pause in clicking so a burst of changes (package, then add-on,
+    // then upcharge...) collapses into exactly one reload with the final
+    // picks, instead of one reload per click.
+    if (calendlyLoaded) {
+      document.getElementById('syncStatus').classList.add('hidden');
+      clearTimeout(autoSyncTimer);
+      autoSyncTimer = setTimeout(initCalendly, 900);
+    }
   }
   render();
 
@@ -300,8 +306,10 @@
   // (first question = a1), e.g. "What are you booking? (auto-filled — please review)".
   function initCalendly(){
     if (calendlyLoading) return;
+    clearTimeout(autoSyncTimer);
     if (!window.Calendly) { calendlyLoading = true; setTimeout(() => { calendlyLoading = false; initCalendly(); }, 300); return; }
     calendlyLoading = true;
+    document.getElementById('syncStatus').classList.add('hidden');
     document.getElementById('calendlyLoading').classList.remove('hidden');
     const container = document.getElementById('calendlyEmbed');
     container.innerHTML = '';
@@ -317,7 +325,7 @@
       document.getElementById('calendlyLoading').classList.add('hidden');
       calendlyLoaded = true;
       calendlyLoading = false;
-      document.getElementById('refreshCalendly').classList.add('hidden');
+      document.getElementById('syncStatus').classList.remove('hidden');
     }, 1200);
   }
 
@@ -333,12 +341,6 @@
   } else {
     initCalendly();
   }
-
-  // explicit sync points: jumping to the calendar, or tapping refresh
-  document.querySelectorAll('a[href="#calendarSection"]').forEach((a) => a.addEventListener('click', () => {
-    setTimeout(initCalendly, 400); // let the scroll land first
-  }));
-  document.getElementById('refreshCalendly').addEventListener('click', initCalendly);
 
   // ---- ZIP CHECK ----
   document.getElementById('zipBtn').addEventListener('click', checkZip);
