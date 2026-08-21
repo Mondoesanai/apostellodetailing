@@ -139,8 +139,15 @@
            Without that question configured, the prefill is silently ignored
            and Calendly just shows its normal blank form. -->
       <div class="surface p-6 md:p-8 reveal in" id="calendarSection">
-        <p class="text-xs font-bold text-[var(--blue-300)] mb-4">PICK A DAY &amp; TIME</p>
-        <div class="rounded-2xl overflow-hidden bg-white">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <p class="text-xs font-bold text-[var(--blue-300)]">PICK A DAY &amp; TIME</p>
+          <button type="button" id="refreshCalendly" class="chip text-[10px] py-1.5 hidden">🔄 Refresh with my latest picks</button>
+        </div>
+        <div class="rounded-2xl overflow-hidden bg-white relative">
+          <div id="calendlyLoading" class="flex flex-col items-center justify-center gap-3 py-24 text-[#4a5a70]">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" class="spin-slow" style="animation-duration:1s;"><circle cx="14" cy="14" r="11" stroke="#cbd5e1" stroke-width="3"/><path d="M14 3a11 11 0 0110 6.5" stroke="#2e9bff" stroke-width="3" stroke-linecap="round"/></svg>
+            <p class="text-sm font-semibold">Loading calendar…</p>
+          </div>
           <div id="calendlyEmbed" style="min-width:280px;height:750px;"></div>
         </div>
       </div>
@@ -171,7 +178,9 @@
 <script src="js/site-common.js"></script>
 <script>
 (function(){
-  let calendlyTimer = null;
+  let latestSummary = '';
+  let calendlyLoaded = false;
+  let calendlyLoading = false;
   let mode = 'car';
   let selectedPkg = 'better';
   let upcharge = false;
@@ -276,28 +285,60 @@
       ? 'Pay once, no commitment.'
       : `Locks in $${RECURRING_PLANS[freq].pricePerVisit}/visit — cancel anytime.`;
 
-    const summaryText = lines.map(([label, price]) => `${label} ($${money(price)})`).join(' + ') + ` — Total: $${money(total)}`;
-    scheduleCalendlyUpdate(summaryText);
+    latestSummary = lines.map(([label, price]) => `${label} ($${money(price)})`).join(' + ') + ` — Total: $${money(total)}`;
+
+    // Calendly only reloads on an explicit trigger (first view / Continue /
+    // Refresh) — reloading the whole iframe on every click was the mobile
+    // "takes forever" bug. Once loaded, just surface a visible refresh
+    // prompt instead of silently reloading behind the user's back.
+    if (calendlyLoaded) document.getElementById('refreshCalendly').classList.remove('hidden');
   }
   render();
 
   // ---- push the estimator selections into Calendly as a prefilled answer ----
   // Requires Shiloh to add an "Invitee Question" on the client-booking event
   // (first question = a1), e.g. "What are you booking? (auto-filled — please review)".
-  function scheduleCalendlyUpdate(summaryText){
-    clearTimeout(calendlyTimer);
-    calendlyTimer = setTimeout(() => initCalendly(summaryText), 500);
-  }
-  function initCalendly(summaryText){
-    if (!window.Calendly) { calendlyTimer = setTimeout(() => initCalendly(summaryText), 300); return; }
+  function initCalendly(){
+    if (calendlyLoading) return;
+    if (!window.Calendly) { calendlyLoading = true; setTimeout(() => { calendlyLoading = false; initCalendly(); }, 300); return; }
+    calendlyLoading = true;
+    document.getElementById('calendlyLoading').classList.remove('hidden');
     const container = document.getElementById('calendlyEmbed');
     container.innerHTML = '';
     window.Calendly.initInlineWidget({
       url: 'https://calendly.com/apostello-business/client-booking?hide_gdpr_banner=1&primary_color=2e9bff',
       parentElement: container,
-      prefill: { customAnswers: { a1: summaryText } },
+      prefill: { customAnswers: { a1: latestSummary } },
     });
+    // Calendly's iframe fires no reliable "loaded" event we can hook from
+    // the parent page (cross-origin), so just give the skeleton a moment
+    // then hand off to the iframe's own loading state.
+    setTimeout(() => {
+      document.getElementById('calendlyLoading').classList.add('hidden');
+      calendlyLoaded = true;
+      calendlyLoading = false;
+      document.getElementById('refreshCalendly').classList.add('hidden');
+    }, 1200);
   }
+
+  // lazy-load Calendly the first time the calendar actually scrolls into view
+  const calendarSection = document.getElementById('calendarSection');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !calendlyLoaded && !calendlyLoading) { initCalendly(); io.disconnect(); }
+      });
+    }, { threshold: 0.1 });
+    io.observe(calendarSection);
+  } else {
+    initCalendly();
+  }
+
+  // explicit sync points: jumping to the calendar, or tapping refresh
+  document.querySelectorAll('a[href="#calendarSection"]').forEach((a) => a.addEventListener('click', () => {
+    setTimeout(initCalendly, 400); // let the scroll land first
+  }));
+  document.getElementById('refreshCalendly').addEventListener('click', initCalendly);
 
   // ---- ZIP CHECK ----
   document.getElementById('zipBtn').addEventListener('click', checkZip);
