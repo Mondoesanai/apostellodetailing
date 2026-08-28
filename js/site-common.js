@@ -1,5 +1,12 @@
 // Shared behavior across all pages: mobile nav, scroll reveals, footer year.
 document.addEventListener('DOMContentLoaded', () => {
+  // point the floating review button (injected by site-audio.js, before
+  // site-data.js's GOOGLE_REVIEW_URL was available) at the real link
+  const reviewBtn = document.getElementById('reviewBtn');
+  if (reviewBtn && typeof GOOGLE_REVIEW_URL !== 'undefined') reviewBtn.href = GOOGLE_REVIEW_URL;
+  const reviewCta = document.getElementById('reviewCta');
+  if (reviewCta && typeof GOOGLE_REVIEW_URL !== 'undefined') reviewCta.href = GOOGLE_REVIEW_URL;
+
   const navToggle = document.getElementById('navToggle');
   const mobileNav = document.getElementById('mobileNav');
   if (navToggle && mobileNav) {

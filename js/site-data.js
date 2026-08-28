@@ -10,6 +10,16 @@ const CONTACT_EMAIL = "apostello.business@gmail.com";
 const CONTACT_PHONE = "(540) 484-3990";
 const CONTACT_PHONE_TEL = "+15404843990";
 
+// Business is Apostello Detailing, 5831c Old Franklin Turnpike, Glade Hill, VA
+// 24092 — 5.0★ (4 reviews) on Google as of this listing snapshot. Built from
+// the CID in Shiloh's Google Maps place link (unofficial-but-widely-used
+// trick: hex CID -> decimal -> search.google.com/local/writereview) so one
+// tap drops a visitor straight into the review composer instead of the plain
+// business listing. Test this link once after publishing — if Google ever
+// changes this behavior, fall back to the plain Maps listing link:
+// https://www.google.com/maps/place/Apostello+Detailing/data=!4m2!3m1!1s0x0:0x84f0e111fb99887a
+const GOOGLE_REVIEW_URL = "https://search.google.com/local/writereview?placeid=9579403874768881786";
+
 // ---- CAR DETAILING PACKAGES (from your pricing flyer) ----
 const CAR_PACKAGES = {
   good:   { name: "Good",   price: 100, tagline: "The essentials, done right",
@@ -23,8 +33,8 @@ const VEHICLE_UPCHARGE = 40; // trucks w/ bed, 3rd row, or large-trunk SUVs
 
 const ADD_ONS = {
   sprayWax:   { name: "Spray Wax",         price: 40, blurb: "Shine + long-lasting paint barrier" },
-  carnauba:   { name: "Carnauba Wax",      price: 60, blurb: "Hand-applied deep gloss & protection" },
-  carpet:     { name: "Carpet Upholstery", price: 75, blurb: "Full vehicle deep clean" },
+  carnauba:   { name: "Carnauba Wax",      price: 40, blurb: "Hand-applied deep gloss & protection" },
+  carpet:     { name: "Carpet Upholstery", price: 60, blurb: "Full vehicle deep clean" },
   seat:       { name: "Seat Upholstery",   price: 65, blurb: "Full vehicle deep clean" },
 };
 

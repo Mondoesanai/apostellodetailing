@@ -258,7 +258,7 @@ input:focus, select:focus, textarea:focus{
 /* ===== floating mute button ===== */
 .audio-toggle-btn{
   position:fixed; z-index:6500;
-  bottom:6.5rem; right:1rem;
+  bottom:1rem; right:1rem;
   width:46px; height:46px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
   background:rgba(11,18,32,.85); backdrop-filter:blur(10px);
@@ -276,6 +276,24 @@ input:focus, select:focus, textarea:focus{
 .audio-toggle-btn.is-muted::before{ animation:none; opacity:0; }
 @keyframes ringPulse{0%{transform:scale(.9); opacity:.7;}100%{transform:scale(1.35); opacity:0;}}
 @media (min-width:1024px){ .audio-toggle-btn{ bottom:1.5rem; } }
+
+/* ===== floating "leave a review" button ===== */
+.review-btn{
+  position:fixed; z-index:6500;
+  bottom:4.25rem; right:1rem;
+  display:flex; align-items:center; gap:.4rem;
+  padding:.65rem 1rem .65rem .8rem; border-radius:999px;
+  background:linear-gradient(180deg, var(--gold-300), var(--gold-500));
+  color:#241a03; font-size:.8rem; font-weight:700; white-space:nowrap;
+  box-shadow:0 1px 0 rgba(255,255,255,.4) inset, 0 10px 24px -8px rgba(242,193,78,.55), 0 2px 4px rgba(0,0,0,.4);
+  transition:transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s cubic-bezier(.2,.8,.2,1);
+}
+.review-btn:hover{transform:translateY(-2px) scale(1.03); box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 16px 30px -8px rgba(242,193,78,.65), 0 2px 6px rgba(0,0,0,.4);}
+.review-btn:active{transform:scale(.96);}
+.review-btn:focus-visible{outline:2px solid var(--gold-300); outline-offset:3px;}
+.review-btn .stars{display:flex; gap:1px; font-size:.75rem; letter-spacing:-1px;}
+@media (min-width:1024px){ .review-btn{ bottom:4.75rem; } }
+@media (max-width:420px){ .review-btn span.review-btn-label{ display:none; } .review-btn{ padding:.65rem; } }
 
 /* ===== motion utilities ===== */
 @keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-16px) rotate(1.5deg)}}

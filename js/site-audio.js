@@ -131,6 +131,21 @@
   const ICON_ON = '<svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M3 8v6h4l5 4V4L7 8H3z" fill="currentColor"/><path d="M15 8a4 4 0 010 6M17.5 5.5a8 8 0 010 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
   const ICON_OFF = '<svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M3 8v6h4l5 4V4L7 8H3z" fill="currentColor"/><path d="M15 8l5 6M20 8l-5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 
+  // ---- floating "leave a review" button (every page). Href is wired up by
+  // site-common.js once site-data.js's GOOGLE_REVIEW_URL is available — this
+  // script loads before that, so it starts as a safe no-op link. ----
+  function injectReviewButton() {
+    const a = document.createElement('a');
+    a.id = 'reviewBtn';
+    a.href = '#';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.className = 'review-btn';
+    a.setAttribute('aria-label', 'Leave us a Google review');
+    a.innerHTML = '<span class="stars">★★★★★</span><span class="review-btn-label">Leave a Review</span>';
+    document.body.appendChild(a);
+  }
+
   // ---- intro splash gate (only shows once per browser session, whichever page loads first) ----
   function injectIntro() {
     const overlay = document.createElement('div');
@@ -160,6 +175,7 @@
 
   function init() {
     injectMuteButton();
+    injectReviewButton();
     if (hasEntered) {
       audio.volume = audio.muted ? 0 : TARGET_VOLUME;
       attemptPlay();
