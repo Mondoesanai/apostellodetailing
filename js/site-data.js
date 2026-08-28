@@ -40,9 +40,9 @@ const VEHICLE_UPCHARGE = 40; // trucks w/ bed, 3rd row, or large-trunk SUVs
 
 const ADD_ONS = {
   sprayWax:   { name: "Spray Wax",         price: 40, blurb: "Shine + long-lasting paint barrier" },
-  carnauba:   { name: "Carnauba Wax",      price: 40, blurb: "Hand-applied deep gloss & protection" },
+  carnauba:   { name: "Carnauba Wax",      price: 60, blurb: "Hand-applied deep gloss & protection" },
   carpet:     { name: "Carpet Upholstery", price: 60, blurb: "Full vehicle deep clean" },
-  seat:       { name: "Seat Upholstery",   price: 65, blurb: "Full vehicle deep clean" },
+  seat:       { name: "Seat Upholstery",   price: 40, blurb: "Full vehicle deep clean" },
 };
 
 // Suggested recurring pricing (NOT on the original flyer — placeholder discount
