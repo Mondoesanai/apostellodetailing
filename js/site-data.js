@@ -13,20 +13,19 @@ const CONTACT_PHONE_TEL = "+15404843990";
 // Business is Apostello Detailing, 5831c Old Franklin Turnpike, Glade Hill, VA
 // 24092 — 5.0★ (4 reviews) on Google as of this listing snapshot.
 //
-// The /local/writereview?placeid= endpoint needs Google's alphanumeric Place
-// ID (starts "ChIJ..."), NOT the numeric CID from a maps.google.com/place
-// URL — those are two different identifiers and mixing them up 404s
-// (confirmed — that's what happened here). This is the CID-based fallback,
-// which reliably opens the business's Maps listing (not the review composer
-// directly) so people land one tap away from reviews instead of a dead page.
-//
-// TO GET THE ONE-TAP VERSION: have Shiloh open business.google.com, go to
-// his Apostello Detailing profile -> "Get more reviews" (or the Reviews
-// tab), and copy the short link Google generates there (looks like
-// g.page/r/XXXXXXXXXXXXXXXX/review). That link is guaranteed correct
-// because Google builds it directly from his verified listing — paste it
-// here in place of this one when he sends it over.
-const GOOGLE_REVIEW_URL = "https://www.google.com/maps?cid=9579403874768881786";
+// Two earlier attempts at this both 404'd:
+//   - /local/writereview?placeid=<CID> — that endpoint needs Google's
+//     alphanumeric Place ID (ChIJ...), not a numeric CID. Wrong ID type.
+//   - google.com/maps?cid=<CID> — opened the listing but not proven to
+//     reach the review composer.
+// This URL is different: it's the ACTUAL address bar link captured live
+// while the review pop-up was open on Shiloh's real listing (confirmed by
+// the user, not guessed) — the !9m1!1b1 flag is what triggers the write-
+// review dialog to open automatically. Trust this one over any hand-built
+// alternative. The ?entry=ttu&g_ep=... suffix is Google's click-tracking
+// and is very likely optional, but leave it as-is since this exact string
+// is the one proven to work — don't "clean it up" without re-testing live.
+const GOOGLE_REVIEW_URL = "https://www.google.com/maps/place/Apostello+Detailing/@37.0067829,-79.7772451,17z/data=!4m8!3m7!1s0x884d676b4ceb58f9:0x84f0e111fb99887a!8m2!3d37.0067829!4d-79.7772451!9m1!1b1!16s%2Fg%2F11zx49b7n7?entry=ttu&g_ep=EgoyMDI2MDgyNi4wIKXMDSoASAFQAw%3D%3D";
 
 // ---- CAR DETAILING PACKAGES (from your pricing flyer) ----
 const CAR_PACKAGES = {
