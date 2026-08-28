@@ -11,14 +11,22 @@ const CONTACT_PHONE = "(540) 484-3990";
 const CONTACT_PHONE_TEL = "+15404843990";
 
 // Business is Apostello Detailing, 5831c Old Franklin Turnpike, Glade Hill, VA
-// 24092 — 5.0★ (4 reviews) on Google as of this listing snapshot. Built from
-// the CID in Shiloh's Google Maps place link (unofficial-but-widely-used
-// trick: hex CID -> decimal -> search.google.com/local/writereview) so one
-// tap drops a visitor straight into the review composer instead of the plain
-// business listing. Test this link once after publishing — if Google ever
-// changes this behavior, fall back to the plain Maps listing link:
-// https://www.google.com/maps/place/Apostello+Detailing/data=!4m2!3m1!1s0x0:0x84f0e111fb99887a
-const GOOGLE_REVIEW_URL = "https://search.google.com/local/writereview?placeid=9579403874768881786";
+// 24092 — 5.0★ (4 reviews) on Google as of this listing snapshot.
+//
+// The /local/writereview?placeid= endpoint needs Google's alphanumeric Place
+// ID (starts "ChIJ..."), NOT the numeric CID from a maps.google.com/place
+// URL — those are two different identifiers and mixing them up 404s
+// (confirmed — that's what happened here). This is the CID-based fallback,
+// which reliably opens the business's Maps listing (not the review composer
+// directly) so people land one tap away from reviews instead of a dead page.
+//
+// TO GET THE ONE-TAP VERSION: have Shiloh open business.google.com, go to
+// his Apostello Detailing profile -> "Get more reviews" (or the Reviews
+// tab), and copy the short link Google generates there (looks like
+// g.page/r/XXXXXXXXXXXXXXXX/review). That link is guaranteed correct
+// because Google builds it directly from his verified listing — paste it
+// here in place of this one when he sends it over.
+const GOOGLE_REVIEW_URL = "https://www.google.com/maps?cid=9579403874768881786";
 
 // ---- CAR DETAILING PACKAGES (from your pricing flyer) ----
 const CAR_PACKAGES = {
