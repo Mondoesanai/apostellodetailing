@@ -409,3 +409,20 @@ input:focus, select:focus, textarea:focus{
   background:linear-gradient(0deg, rgba(0,0,0,.75), transparent);
   font-size:.85rem; font-weight:600;
 }
+
+/* ===== receipt modal + print ===== */
+#receiptModal{transition:opacity .2s ease;}
+@media print{
+  body > *:not(#receiptModal){ display:none !important; }
+  #receiptModal{
+    position:static !important; inset:auto !important; display:block !important;
+    background:#fff !important; backdrop-filter:none !important; padding:0 !important;
+  }
+  #receiptPrintArea{
+    max-height:none !important; overflow:visible !important; box-shadow:none !important;
+    border:none !important; background:#fff !important; color:#111 !important; max-width:100% !important;
+  }
+  #receiptPrintArea *{ color:#111 !important; background:transparent !important; border-color:#ccc !important; }
+  #receiptPrintArea .text-\[var\(--gold-400\)\]{ color:#8a6400 !important; }
+  #receiptActions{ display:none !important; }
+}

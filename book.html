@@ -151,6 +151,21 @@
           <div id="calendlyEmbed" style="min-width:280px;height:750px;"></div>
         </div>
       </div>
+
+      <!-- RECEIPT — Calendly's own form is cross-origin, so we can't read
+           what a customer types in there. These fields are ours, used only
+           to build a printable order summary for the customer's records. -->
+      <div class="surface p-6 md:p-8 reveal in" id="receiptSection">
+        <p class="text-xs font-bold text-[var(--blue-300)] mb-1">GET YOUR RECEIPT</p>
+        <p class="text-sm text-[var(--muted)] mb-5">After you book, fill this in to generate a receipt for your records — it captures exactly what you ordered, with your info and today's date.</p>
+        <div class="grid sm:grid-cols-2 gap-3 mb-3">
+          <input type="text" id="receiptName" placeholder="Full name">
+          <input type="tel" id="receiptPhone" placeholder="Phone number">
+        </div>
+        <input type="email" id="receiptEmail" placeholder="Email address" class="mb-4">
+        <p id="receiptError" class="text-xs text-[var(--gold-400)] mb-3 hidden">Please fill in your name and email first.</p>
+        <button type="button" id="generateReceiptBtn" class="btn btn-primary w-full justify-center">🧾 Generate Receipt</button>
+      </div>
     </div>
 
     <!-- STICKY SUMMARY -->
@@ -167,6 +182,48 @@
   </div>
 </section>
 
+<!-- RECEIPT MODAL -->
+<div id="receiptModal" class="hidden fixed inset-0 z-[9000] items-center justify-center p-4" style="background:rgba(5,7,12,.75); backdrop-filter:blur(4px);">
+  <div class="surface-float w-full max-w-md max-h-[90vh] overflow-y-auto" id="receiptPrintArea">
+    <div class="p-7">
+      <div class="flex items-center gap-3 mb-6">
+        <img src="images/logo.png" alt="Apostello Detailing" class="h-12 w-12 rounded-full glow-ring shrink-0">
+        <div>
+          <p class="font-display text-lg leading-tight">APOSTELLO DETAILING</p>
+          <p class="text-xs text-[var(--muted)] leading-snug">5831c Old Franklin Turnpike, Glade Hill, VA 24092</p>
+          <p class="text-xs text-[var(--muted)] leading-snug">(540) 484-3990 · apostello.business@gmail.com</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between border-t border-b border-white/10 py-3 mb-5">
+        <div>
+          <p class="eyebrow mb-1">Receipt</p>
+          <p id="receiptNumber" class="text-sm font-semibold"></p>
+        </div>
+        <p id="receiptDate" class="text-sm text-[var(--muted)]"></p>
+      </div>
+      <div class="mb-5">
+        <p class="text-xs font-bold text-[var(--blue-300)] mb-2">BILLED TO</p>
+        <p id="receiptCustName" class="text-sm font-semibold"></p>
+        <p id="receiptCustPhone" class="text-sm text-[var(--muted)]"></p>
+        <p id="receiptCustEmail" class="text-sm text-[var(--muted)]"></p>
+      </div>
+      <div class="mb-5">
+        <p class="text-xs font-bold text-[var(--blue-300)] mb-3">ORDER SUMMARY</p>
+        <div id="receiptLines" class="flex flex-col gap-2 text-sm text-[var(--muted)] mb-3"></div>
+        <div class="border-t border-white/10 pt-3 flex items-end justify-between">
+          <span class="text-sm text-[var(--muted)]">Total</span>
+          <span class="font-display text-3xl text-[var(--gold-400)]" id="receiptTotal"></span>
+        </div>
+      </div>
+      <p class="text-xs text-[var(--muted-2)] mb-6">This is a booking summary for your records, not a payment receipt — Shiloh collects payment at time of service.</p>
+      <div class="flex gap-3" id="receiptActions">
+        <button type="button" id="printReceiptBtn" class="btn btn-primary flex-1 justify-center">Print / Save as PDF</button>
+        <button type="button" id="closeReceiptBtn" class="btn btn-ghost">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer class="py-10 border-t border-white/[0.06] mt-10">
   <div class="max-w-7xl mx-auto px-5 md:px-8 text-center text-xs text-[var(--muted-2)]">
     © <span data-year></span> Apostello Detailing · Serving Franklin County &amp; surrounding areas
@@ -179,6 +236,8 @@
 <script>
 (function(){
   let latestSummary = '';
+  let latestLines = [];
+  let latestTotal = 0;
   let calendlyLoaded = false;
   let calendlyLoading = false;
   let autoSyncTimer = null;
@@ -287,6 +346,8 @@
       : `Locks in $${RECURRING_PLANS[freq].pricePerVisit}/visit — cancel anytime.`;
 
     latestSummary = lines.map(([label, price]) => `${label} ($${money(price)})`).join(' + ') + ` — Total: $${money(total)}`;
+    latestLines = lines;
+    latestTotal = total;
 
     // Auto-sync into Calendly, debounced. Reloading the whole iframe on every
     // single click was the mobile "takes forever" bug — this waits for a
@@ -355,6 +416,48 @@
       resultEl.innerHTML = '<span class="text-[var(--gold-400)]">This ZIP is outside our current radius — message us and we\'ll confirm availability.</span>';
     }
   }
+
+  // ---- RECEIPT ----
+  // Client-side only — no payment actually happens on this site, so this is
+  // an order-summary receipt for the customer's records, built from the same
+  // live estimator state (latestLines/latestTotal) that feeds Calendly.
+  const receiptModal = document.getElementById('receiptModal');
+  document.getElementById('generateReceiptBtn').addEventListener('click', () => {
+    const name = document.getElementById('receiptName').value.trim();
+    const phone = document.getElementById('receiptPhone').value.trim();
+    const email = document.getElementById('receiptEmail').value.trim();
+    const errorEl = document.getElementById('receiptError');
+
+    if (!name || !email) {
+      errorEl.classList.remove('hidden');
+      (!name ? document.getElementById('receiptName') : document.getElementById('receiptEmail')).focus();
+      return;
+    }
+    errorEl.classList.add('hidden');
+
+    const receiptNo = 'APD-' + Date.now().toString(36).toUpperCase();
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    document.getElementById('receiptNumber').textContent = `#${receiptNo}`;
+    document.getElementById('receiptDate').textContent = today;
+    document.getElementById('receiptCustName').textContent = name;
+    document.getElementById('receiptCustPhone').textContent = phone || '—';
+    document.getElementById('receiptCustEmail').textContent = email;
+    document.getElementById('receiptLines').innerHTML = latestLines.map(([label, price]) =>
+      `<div class="flex justify-between"><span>${label}</span><span class="text-[var(--white)] font-semibold">$${money(price)}</span></div>`).join('');
+    document.getElementById('receiptTotal').textContent = `$${money(latestTotal)}`;
+
+    receiptModal.classList.remove('hidden');
+    receiptModal.classList.add('flex');
+  });
+
+  function closeReceipt(){
+    receiptModal.classList.add('hidden');
+    receiptModal.classList.remove('flex');
+  }
+  document.getElementById('closeReceiptBtn').addEventListener('click', closeReceipt);
+  receiptModal.addEventListener('click', (e) => { if (e.target === receiptModal) closeReceipt(); });
+  document.getElementById('printReceiptBtn').addEventListener('click', () => window.print());
 
 })();
 </script>
