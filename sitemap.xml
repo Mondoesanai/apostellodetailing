@@ -28,4 +28,8 @@
     <loc>https://apostellodetailing.com/referral.html</loc>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://apostellodetailing.com/blog/</loc>
+    <priority>0.6</priority>
+  </url>
 </urlset>
