@@ -160,11 +160,13 @@
         <p class="text-xs font-bold text-[var(--blue-300)] mb-1">GET YOUR RECEIPT</p>
         <p class="text-sm text-[var(--muted)] mb-5">After you book, fill this in to generate a receipt for your records — it captures exactly what you ordered, with your info and today's date.</p>
         <div class="grid sm:grid-cols-2 gap-3 mb-3">
-          <input type="text" id="receiptName" placeholder="Full name">
-          <input type="tel" id="receiptPhone" placeholder="Phone number">
+          <input type="text" id="receiptName" placeholder="Full name *" required aria-required="true">
+          <input type="tel" id="receiptPhone" placeholder="Phone number *" required aria-required="true"
+                 inputmode="tel" autocomplete="tel">
         </div>
-        <input type="email" id="receiptEmail" placeholder="Email address" class="mb-4">
-        <p id="receiptError" class="text-xs text-[var(--gold-400)] mb-3 hidden">Please fill in your name and email first.</p>
+        <input type="email" id="receiptEmail" placeholder="Email address *" required aria-required="true" class="mb-4">
+        <p class="text-xs text-[var(--muted-2)] mb-3">* All three are required — we need a phone number to confirm your booking.</p>
+        <p id="receiptError" class="text-xs text-[var(--gold-400)] mb-3 hidden" role="alert" aria-live="polite">Please fill in your name, phone number and email first.</p>
         <button type="button" id="generateReceiptBtn" class="btn btn-primary w-full justify-center">🧾 Generate Receipt</button>
       </div>
     </div>
@@ -429,9 +431,27 @@
     const email = document.getElementById('receiptEmail').value.trim();
     const errorEl = document.getElementById('receiptError');
 
-    if (!name || !email) {
+    // A phone number is required: Shiloh needs to be able to confirm the
+    // booking, and an email address alone has repeatedly not been enough.
+    // Checked for a plausible NUMBER rather than merely non-empty, because
+    // "n/a" in a required box is the same problem wearing a different hat.
+    const digits = phone.replace(/\D/g, '');
+    const phoneLooksReal = digits.length >= 10 && digits.length <= 15;
+    const emailLooksReal = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+
+    let problem = null;
+    let focusId = null;
+    if (!name) { problem = 'Please enter your full name.'; focusId = 'receiptName'; }
+    else if (!phone) { problem = 'Please enter a phone number — we need it to confirm your booking.'; focusId = 'receiptPhone'; }
+    else if (!phoneLooksReal) { problem = 'That phone number does not look right. Please include the area code.'; focusId = 'receiptPhone'; }
+    else if (!email) { problem = 'Please enter your email address.'; focusId = 'receiptEmail'; }
+    else if (!emailLooksReal) { problem = 'That email address does not look right.'; focusId = 'receiptEmail'; }
+
+    if (problem) {
+      errorEl.textContent = problem;
       errorEl.classList.remove('hidden');
-      (!name ? document.getElementById('receiptName') : document.getElementById('receiptEmail')).focus();
+      const el = document.getElementById(focusId);
+      if (el) { el.focus(); el.style.outline = '2px solid var(--gold-400)'; setTimeout(() => { el.style.outline = ''; }, 2000); }
       return;
     }
     errorEl.classList.add('hidden');
@@ -442,7 +462,7 @@
     document.getElementById('receiptNumber').textContent = `#${receiptNo}`;
     document.getElementById('receiptDate').textContent = today;
     document.getElementById('receiptCustName').textContent = name;
-    document.getElementById('receiptCustPhone').textContent = phone || '—';
+    document.getElementById('receiptCustPhone').textContent = phone;
     document.getElementById('receiptCustEmail').textContent = email;
     document.getElementById('receiptLines').innerHTML = latestLines.map(([label, price]) =>
       `<div class="flex justify-between"><span>${label}</span><span class="text-[var(--white)] font-semibold">$${money(price)}</span></div>`).join('');
