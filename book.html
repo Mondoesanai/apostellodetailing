@@ -140,11 +140,41 @@
            Without that question configured, the prefill is silently ignored
            and Calendly just shows its normal blank form. -->
       <div class="surface p-6 md:p-8 reveal in" id="calendarSection">
+
+        <!-- CONTACT — a phone number is REQUIRED before the calendar opens.
+             Shiloh asked for a mandatory phone number. We cannot add a required
+             field to his Calendly event (only he can edit that), so the field
+             lives here, on our page, and the calendar stays locked until it is
+             filled in. The value is then pushed into Calendly the same way the
+             estimate already is, so it lands in the booking's additional
+             information without Shiloh changing anything. -->
+        <div id="contactGate" class="mb-6">
+          <p class="text-xs font-bold text-[var(--blue-300)] mb-1">YOUR CONTACT DETAILS</p>
+          <p class="text-sm text-[var(--muted)] mb-5">We need a phone number before you pick a time — it&rsquo;s how we confirm your appointment and reach you on the day.</p>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <input type="text" id="bookName" placeholder="Full name *" required aria-required="true"
+                   autocomplete="name">
+            <input type="tel" id="bookPhone" placeholder="Phone number *" required aria-required="true"
+                   inputmode="tel" autocomplete="tel">
+          </div>
+          <p id="bookContactError" class="text-xs text-[var(--gold-400)] mt-3 hidden" role="alert" aria-live="polite"></p>
+        </div>
+
         <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
           <p class="text-xs font-bold text-[var(--blue-300)]">PICK A DAY &amp; TIME</p>
           <span id="syncStatus" class="chip text-[10px] py-1.5 hidden">✓ Synced with your order</span>
         </div>
-        <div class="rounded-2xl overflow-hidden bg-white relative">
+
+        <!-- The lock. Shown until the name and phone are valid; the Calendly
+             iframe is not even loaded behind it, so there is no way to book
+             around it by scrolling past. -->
+        <div id="calendarLock" class="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-16 text-center">
+          <p class="text-4xl mb-3" aria-hidden="true">🔒</p>
+          <p class="font-semibold mb-1">Add your name and phone number to see available times</p>
+          <p class="text-sm text-[var(--muted)]">Your picks are saved — nothing is lost.</p>
+        </div>
+
+        <div id="calendarWrap" class="rounded-2xl overflow-hidden bg-white relative hidden">
           <div id="calendlyLoading" class="flex flex-col items-center justify-center gap-3 py-24 text-[#4a5a70]">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none" class="spin-slow" style="animation-duration:1s;"><circle cx="14" cy="14" r="11" stroke="#cbd5e1" stroke-width="3"/><path d="M14 3a11 11 0 0110 6.5" stroke="#2e9bff" stroke-width="3" stroke-linecap="round"/></svg>
             <p class="text-sm font-semibold">Loading calendar…</p>
@@ -370,6 +400,10 @@
   // (first question = a1), e.g. "What are you booking? (auto-filled — please review)".
   function initCalendly(){
     if (calendlyLoading) return;
+    // Never open the calendar without the required details. This is the same
+    // check the gate uses, repeated here because `initCalendly` is also called
+    // by the scroll observer and the debounced re-sync.
+    if (!contactReady()) return;
     clearTimeout(autoSyncTimer);
     if (!window.Calendly) { calendlyLoading = true; setTimeout(() => { calendlyLoading = false; initCalendly(); }, 300); return; }
     calendlyLoading = true;
@@ -377,10 +411,20 @@
     document.getElementById('calendlyLoading').classList.remove('hidden');
     const container = document.getElementById('calendlyEmbed');
     container.innerHTML = '';
+    const who = contactValues();
     window.Calendly.initInlineWidget({
       url: 'https://calendly.com/apostello-business/client-booking?hide_gdpr_banner=1&primary_color=2e9bff',
       parentElement: container,
-      prefill: { customAnswers: { a1: latestSummary } },
+      prefill: {
+        // Calendly's own name field, so they do not type it twice.
+        name: who.name,
+        customAnswers: {
+          // The phone rides along in the SAME answer the estimate already uses.
+          // Shiloh has one invitee question configured; adding a second (a2)
+          // would need him to change his event, and this has to work today.
+          a1: `Phone: ${who.phone}\n${latestSummary}`,
+        },
+      },
     });
     // Calendly's iframe fires no reliable "loaded" event we can hook from
     // the parent page (cross-origin), so just give the skeleton a moment
@@ -393,16 +437,124 @@
     }, 1200);
   }
 
+  // ---- the mandatory contact gate ----------------------------------------
+  //
+  // Shiloh asked for a required phone number. His Calendly event is his to
+  // edit, not ours, so the requirement lives on this page: no name and phone,
+  // no calendar. The iframe is not loaded behind the lock, so there is nothing
+  // to scroll past and book around.
+  const nameEl = document.getElementById('bookName');
+  const phoneEl = document.getElementById('bookPhone');
+  const lockEl = document.getElementById('calendarLock');
+  const wrapEl = document.getElementById('calendarWrap');
+  const contactErrEl = document.getElementById('bookContactError');
+
+  // Ten digits, however they typed it — (540) 484-3990, 540.484.3990, +1 540…
+  // all count. A stricter rule would reject real numbers; a looser one would
+  // accept "1234" and hand Shiloh a booking he cannot act on.
+  function digitsOf(v){ return String(v || '').replace(/\D/g, ''); }
+  function phoneLooksReal(v){
+    const d = digitsOf(v);
+    return d.length === 10 || (d.length === 11 && d.startsWith('1'));
+  }
+  function contactValues(){
+    const d = digitsOf(phoneEl.value);
+    const ten = d.length === 11 ? d.slice(1) : d;
+    return {
+      name: nameEl.value.trim(),
+      // Normalised, so what reaches Shiloh is always dialable in the same shape.
+      phone: ten.length === 10 ? `(${ten.slice(0,3)}) ${ten.slice(3,6)}-${ten.slice(6)}` : phoneEl.value.trim(),
+    };
+  }
+  function contactReady(){
+    return nameEl.value.trim().length >= 2 && phoneLooksReal(phoneEl.value);
+  }
+
+  let gateOpened = false;
+  let gateTimer = null;
+
+  function syncGate(){
+    const ready = contactReady();
+
+    // The lock follows the field immediately — that part should feel instant.
+    lockEl.classList.toggle('hidden', ready);
+    wrapEl.classList.toggle('hidden', !ready);
+
+    if (!ready) {
+      // If it was open and has become invalid — they are correcting the number,
+      // or adding an extension — forget that it was open, so the corrected
+      // value gets a clean load rather than Calendly keeping the half-typed one
+      // it was handed on the keystroke where the number briefly looked whole.
+      clearTimeout(gateTimer);
+      if (gateOpened) { gateOpened = false; calendlyLoaded = false; }
+
+      // Only complain about something they have actually started filling in —
+      // an error on an untouched field reads as the page being broken.
+      if (phoneEl.value.trim() && !phoneLooksReal(phoneEl.value)) {
+        contactErrEl.textContent = 'That phone number does not look complete — we need 10 digits.';
+        contactErrEl.classList.remove('hidden');
+      } else {
+        contactErrEl.classList.add('hidden');
+      }
+      return;
+    }
+    contactErrEl.classList.add('hidden');
+
+    // Keep the receipt fields in step, so nobody types the same thing twice.
+    const who = contactValues();
+    const rName = document.getElementById('receiptName');
+    const rPhone = document.getElementById('receiptPhone');
+    if (rName && !rName.value.trim()) rName.value = who.name;
+    if (rPhone && !rPhone.value.trim()) rPhone.value = who.phone;
+
+    // Wait for them to STOP typing before loading anything. A ten-digit number
+    // is valid halfway through "(540) 484-3990 ext 2", so acting on the first
+    // moment it looks complete sends Calendly a number they had not finished.
+    clearTimeout(gateTimer);
+    clearTimeout(autoSyncTimer);
+    gateTimer = setTimeout(() => {
+      if (!contactReady()) return;
+      gateOpened = true;
+      document.getElementById('syncStatus').classList.add('hidden');
+      initCalendly();
+    }, 700);
+  }
+  nameEl.addEventListener('input', syncGate);
+  phoneEl.addEventListener('input', syncGate);
+  // Leaving the field means they are done with it — no need to wait.
+  phoneEl.addEventListener('blur', () => { clearTimeout(gateTimer); gateTimer = setTimeout(syncGateNow, 0); });
+  function syncGateNow(){
+    if (!contactReady()) { syncGate(); return; }
+    lockEl.classList.add('hidden');
+    wrapEl.classList.remove('hidden');
+    contactErrEl.classList.add('hidden');
+    gateOpened = true;
+    initCalendly();
+  }
+  syncGate();
+
+  // Send them to the field rather than to a locked calendar.
+  document.querySelectorAll('a[href="#calendarSection"]').forEach((a) => {
+    a.addEventListener('click', () => {
+      if (contactReady()) return;
+      setTimeout(() => {
+        nameEl.value.trim() ? phoneEl.focus() : nameEl.focus();
+        contactErrEl.textContent = 'Add your name and phone number to see available times.';
+        contactErrEl.classList.remove('hidden');
+      }, 400);
+    });
+  });
+
   // lazy-load Calendly the first time the calendar actually scrolls into view
   const calendarSection = document.getElementById('calendarSection');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && !calendlyLoaded && !calendlyLoading) { initCalendly(); io.disconnect(); }
+        if (entry.isIntersecting && !calendlyLoaded && !calendlyLoading && contactReady()) { initCalendly(); io.disconnect(); }
       });
     }, { threshold: 0.1 });
     io.observe(calendarSection);
-  } else {
+  } else if (contactReady()) {
     initCalendly();
   }
 
