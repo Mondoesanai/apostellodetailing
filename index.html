@@ -129,9 +129,11 @@
           <button type="button" class="chip flex-1 justify-center" data-hero-veh="boat">Boat</button>
         </div>
         <div id="heroCarRow" class="grid grid-cols-3 gap-2 mb-5">
-          <button type="button" class="chip justify-center text-xs" data-hero-pkg="100">Good<br><span class="text-[var(--blue-300)]">$100</span></button>
-          <button type="button" class="chip selected justify-center text-xs" data-hero-pkg="150">Better<br><span class="text-[var(--blue-300)]">$150</span></button>
-          <button type="button" class="chip justify-center text-xs" data-hero-pkg="200">Best<br><span class="text-[var(--blue-300)]">$200</span></button>
+          <!-- Names only: every package price must read "Starting at", and the
+               readout below says that for whichever one is picked. -->
+          <button type="button" class="chip justify-center text-xs py-3" data-hero-pkg="75" data-hero-key="interior">Interior</button>
+          <button type="button" class="chip justify-center text-xs py-3" data-hero-pkg="75" data-hero-key="exterior">Exterior</button>
+          <button type="button" class="chip selected justify-center text-xs py-3" data-hero-pkg="150" data-hero-key="full">Full Detail</button>
         </div>
         <div id="heroBoatRow" class="hidden mb-5">
           <div class="flex items-center justify-between mb-2">
@@ -143,10 +145,10 @@
         </div>
         <div class="flex items-end justify-between border-t border-white/15 pt-4">
           <div>
-            <p class="text-xs text-[var(--muted)] mb-1">Estimated price</p>
+            <p class="text-xs text-[var(--muted)] mb-1">Starting at</p>
             <p class="font-display text-4xl text-[var(--gold-400)]">$<span id="heroPrice">150</span></p>
           </div>
-          <a href="book.html" class="btn btn-primary py-3 px-5 text-sm" data-track="quote-cta">Book This →</a>
+          <a href="book.html?pkg=full" id="heroBookLink" class="btn btn-primary py-3 px-5 text-sm" data-track="quote-cta">Book This →</a>
         </div>
       </div>
     </div>
@@ -163,34 +165,39 @@
   <div class="max-w-7xl mx-auto px-5 md:px-8">
     <div class="text-center max-w-2xl mx-auto mb-14 reveal">
       <p class="eyebrow mb-3">Clean · Protect · Restore</p>
-      <h2 class="font-display text-4xl md:text-5xl mb-4">PICK YOUR LEVEL OF SHINE</h2>
-      <p class="text-[var(--muted)]">Straightforward packages, upfront pricing. No surprise charges at the door.</p>
+      <h2 class="font-display text-4xl md:text-5xl mb-4">INSIDE, OUTSIDE, OR BOTH</h2>
+      <p class="text-[var(--muted)]">Three simple options with a clear starting price. Wax is an optional add-on.</p>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
       <div class="surface tier-card tilt-card p-8 reveal">
-        <p class="eyebrow mb-2 text-[var(--muted)]">Good</p>
-        <p class="font-display text-5xl mb-4">$100</p>
+        <p class="eyebrow mb-4 text-[var(--muted)]">Interior Detail</p>
+        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
+        <p class="font-display text-5xl mb-4">$75</p>
         <ul class="space-y-2 text-sm text-[var(--muted)] mb-6">
-          <li>Interior vacuum &amp; wipe down</li><li>Basic interior cleaning</li><li>Exterior wash</li><li>Wheels &amp; tires cleaned</li>
+          <li>Interior vacuum &amp; wipe down</li><li>Deep interior cleaning</li><li>All surfaces &amp; crevices</li>
         </ul>
       </div>
-      <div class="surface tier-card tier-best tilt-card p-8 relative reveal" style="transition-delay:.08s">
-        <span class="absolute -top-3 left-8 chip selected text-[var(--gold-400)]" style="border-color:var(--gold-400)">★ Most Popular</span>
-        <p class="eyebrow mb-2 text-[var(--muted)]">Better</p>
+      <div class="surface tier-card tilt-card p-8 reveal" style="transition-delay:.08s">
+        <p class="eyebrow mb-4 text-[var(--muted)]">Exterior Detail</p>
+        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
+        <p class="font-display text-5xl mb-4">$75</p>
+        <ul class="space-y-2 text-sm text-[var(--muted)] mb-6">
+          <li>Thorough exterior wash</li><li>Exterior shine &amp; finish</li><li>Wheels &amp; tires cleaned</li>
+        </ul>
+      </div>
+      <div class="surface tier-card tier-best tilt-card p-8 reveal" style="transition-delay:.16s">
+        <p class="eyebrow mb-1 text-[var(--muted)]">Full Detail</p>
+        <p class="text-xs text-[var(--muted-2)] mb-3">Interior + Exterior</p>
+        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
         <p class="font-display text-5xl mb-4 text-[var(--gold-400)]">$150</p>
         <ul class="space-y-2 text-sm text-[var(--muted)] mb-6">
-          <li>Full deep interior detail</li><li>Thorough interior cleaning</li><li>Thorough exterior wash</li><li>Wheels &amp; tires cleaned</li>
-        </ul>
-      </div>
-      <div class="surface tier-card tilt-card p-8 reveal" style="transition-delay:.16s">
-        <p class="eyebrow mb-2 text-[var(--muted)]">Best</p>
-        <p class="font-display text-5xl mb-4">$200</p>
-        <ul class="space-y-2 text-sm text-[var(--muted)] mb-6">
-          <li>Full deep interior detail</li><li>All surfaces &amp; crevices</li><li>Premium exterior wash &amp; finish</li><li>Wheels &amp; tires cleaned</li>
+          <li>Everything in the Interior Detail</li><li>Everything in the Exterior Detail</li>
         </ul>
       </div>
     </div>
-    <div class="text-center mt-10 mb-16 reveal">
+    <!-- Shiloh's required disclaimer — keep this exact wording. -->
+    <p class="text-center text-sm text-[var(--white)] font-semibold mt-8 reveal" role="note">All prices are subject to change following an inspection of the vehicle.</p>
+    <div class="text-center mt-8 mb-16 reveal">
       <a href="services.html" class="btn btn-ghost">See full pricing, add-ons &amp; boat detailing →</a>
     </div>
 
@@ -390,9 +397,12 @@
 <script defer src="js/site-data.js"></script>
 <script defer src="js/site-common.js"></script>
 <script defer src="js/site-video-gallery.js"></script>
-<script defer>
-// hero mini estimator
-(function(){
+<script>
+// `defer` does nothing on an inline script, so this ran mid-parse — before the
+// deferred site-data.js / site-video-gallery.js above existed — and threw at
+// renderVideoGallery, leaving the gallery, reviews and email signup dead.
+// Deferred scripts all finish before DOMContentLoaded, so wait for that.
+document.addEventListener('DOMContentLoaded', function(){
   const vehBtns = document.querySelectorAll('[data-hero-veh]');
   const pkgBtns = document.querySelectorAll('[data-hero-pkg]');
   const carRow = document.getElementById('heroCarRow');
@@ -400,7 +410,8 @@
   const boatFt = document.getElementById('heroBoatFt');
   const boatFtVal = document.getElementById('heroBoatFtVal');
   const priceEl = document.getElementById('heroPrice');
-  let mode = 'car', pkgPrice = 150;
+  const bookLink = document.getElementById('heroBookLink');
+  let mode = 'car', pkgPrice = 150, pkgKey = 'full';
 
   vehBtns.forEach(b => b.addEventListener('click', () => {
     vehBtns.forEach(x => { x.classList.remove('selected'); x.classList.remove('tap-hint'); });
@@ -414,6 +425,7 @@
     pkgBtns.forEach(x => x.classList.remove('selected'));
     b.classList.add('selected');
     pkgPrice = parseInt(b.dataset.heroPkg, 10);
+    pkgKey = b.dataset.heroKey;
     render();
   }));
   boatFt && boatFt.addEventListener('input', () => { boatFtVal.textContent = boatFt.value; render(); });
@@ -421,6 +433,8 @@
   function render(){
     if (mode === 'car') priceEl.textContent = pkgPrice;
     else priceEl.textContent = parseInt(boatFt.value,10) * BOAT_RATE_PER_FT;
+    // Carry the pick through, so "Book This" opens on the detail they chose.
+    bookLink.href = mode === 'car' ? `book.html?pkg=${pkgKey}` : 'book.html';
   }
 
   // marquee — generate enough repeats that -50% always lands on an identical
@@ -484,7 +498,7 @@
     btn.textContent = 'Opening your email app...';
     btn.disabled = true;
   });
-})();
+});
 </script>
 </body>
 </html>

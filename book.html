@@ -209,7 +209,9 @@
         <span class="text-sm text-[var(--muted)]">Total</span>
         <span class="font-display text-5xl text-[var(--gold-400)]">$<span id="totalPrice">150</span></span>
       </div>
-      <p id="totalSuffix" class="text-xs text-[var(--muted-2)] mb-6"></p>
+      <p id="totalSuffix" class="text-xs text-[var(--muted-2)] mb-4"></p>
+      <!-- Shiloh's required disclaimer — keep this exact wording. -->
+      <p class="text-xs text-[var(--white)] font-semibold leading-relaxed border-l-2 border-[var(--blue-400)] pl-3 mb-6" role="note">All prices are subject to change following an inspection of the vehicle.</p>
       <a href="#calendarSection" class="btn btn-primary w-full justify-center" data-track="booking">Continue to Calendar ↓</a>
     </div>
   </div>
@@ -248,6 +250,7 @@
           <span class="font-display text-3xl text-[var(--gold-400)]" id="receiptTotal"></span>
         </div>
       </div>
+      <p class="text-xs text-[var(--muted)] font-semibold mb-2">All prices are subject to change following an inspection of the vehicle.</p>
       <p class="text-xs text-[var(--muted-2)] mb-6">This is a booking summary for your records, not a payment receipt — Shiloh collects payment at time of service.</p>
       <div class="flex gap-3" id="receiptActions">
         <button type="button" id="printReceiptBtn" class="btn btn-primary flex-1 justify-center">Print / Save as PDF</button>
@@ -275,7 +278,10 @@
   let calendlyLoading = false;
   let autoSyncTimer = null;
   let mode = 'car';
-  let selectedPkg = 'better';
+  // "Book Interior Detail" etc. on the Services page arrive as ?pkg=<key>, so
+  // the customer lands on the detail they just chose, not a default.
+  const pkgParam = new URLSearchParams(location.search).get('pkg');
+  let selectedPkg = Object.keys(CAR_PACKAGES).includes(pkgParam) ? pkgParam : 'full';
   let upcharge = false;
   let selectedAddons = new Set();
   let freq = 'once';
@@ -299,8 +305,10 @@
   // package cards
   const pkgCards = document.getElementById('pkgCards');
   pkgCards.innerHTML = Object.entries(CAR_PACKAGES).map(([key, p]) => `
-    <button type="button" data-pkg="${key}" class="tier-card text-left p-5 rounded-2xl border ${key==='better' ? 'tier-best border-[var(--gold-400)]/40' : 'border-white/10'} bg-white/[0.02] ${key===selectedPkg ? 'ring-2 ring-[var(--blue-400)]' : ''}">
-      <p class="text-xs text-[var(--muted)] mb-1">${p.name}${p.featured ? ' ★' : ''}</p>
+    <button type="button" data-pkg="${key}" class="tier-card flex flex-col justify-start text-left p-5 rounded-2xl border ${p.featured ? 'tier-best border-[var(--gold-400)]/40' : 'border-white/10'} bg-white/[0.02] ${key===selectedPkg ? 'ring-2 ring-[var(--blue-400)]' : ''}">
+      <p class="text-sm font-bold text-[var(--white)]">${p.name}</p>
+      <p class="text-xs text-[var(--muted-2)] mb-3">${p.sub || '&nbsp;'}</p>
+      <p class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-2)]">Starting at</p>
       <p class="font-display text-3xl mb-2">$${p.price}</p>
       <ul class="text-xs text-[var(--muted)] space-y-1">${p.features.map(f=>`<li>• ${f}</li>`).join('')}</ul>
     </button>`).join('');
@@ -354,13 +362,13 @@
     if (mode === 'car') {
       if (freq === 'once') {
         const pkg = CAR_PACKAGES[selectedPkg];
-        lines.push([`${pkg.name} Package`, pkg.price]);
+        lines.push([pkg.name, pkg.price]);
         total += pkg.price;
       } else {
         const plan = RECURRING_PLANS[freq];
         lines.push([`${plan.name} (per visit)`, plan.pricePerVisit]);
         total += plan.pricePerVisit;
-        suffix = `Billed ${plan.cadence} · save $${plan.save} vs one-time Better package`;
+        suffix = `Billed ${plan.cadence} · save $${plan.save} vs a one-time Full Detail`;
       }
       if (upcharge) { lines.push(['Truck bed / 3rd row / large SUV', VEHICLE_UPCHARGE]); total += VEHICLE_UPCHARGE; }
       selectedAddons.forEach(key => { const a = ADD_ONS[key]; lines.push([a.name, a.price]); total += a.price; });
@@ -376,9 +384,11 @@
     document.getElementById('totalSuffix').textContent = suffix;
     document.getElementById('freqNote').textContent = freq === 'once'
       ? 'Pay once, no commitment.'
-      : `Locks in $${RECURRING_PLANS[freq].pricePerVisit}/visit — cancel anytime.`;
+      : `$${RECURRING_PLANS[freq].pricePerVisit} per visit — cancel anytime.`;
 
-    latestSummary = lines.map(([label, price]) => `${label} ($${money(price)})`).join(' + ') + ` — Total: $${money(total)}`;
+    // "Estimated": this text lands in Shiloh's booking and in front of the
+    // customer in Calendly, and the final price is set at inspection.
+    latestSummary = lines.map(([label, price]) => `${label} ($${money(price)})`).join(' + ') + ` — Estimated total: $${money(total)}`;
     latestLines = lines;
     latestTotal = total;
 

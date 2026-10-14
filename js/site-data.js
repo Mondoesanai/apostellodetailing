@@ -27,26 +27,33 @@ const CONTACT_PHONE_TEL = "+15404843990";
 // is the one proven to work — don't "clean it up" without re-testing live.
 const GOOGLE_REVIEW_URL = "https://www.google.com/maps/place/Apostello+Detailing/@37.0067829,-79.7772451,17z/data=!4m8!3m7!1s0x884d676b4ceb58f9:0x84f0e111fb99887a!8m2!3d37.0067829!4d-79.7772451!9m1!1b1!16s%2Fg%2F11zx49b7n7?entry=ttu&g_ep=EgoyMDI2MDgyNi4wIKXMDSoASAFQAw%3D%3D";
 
-// ---- CAR DETAILING PACKAGES (from your pricing flyer) ----
+// ---- CAR DETAILING SERVICES ----
+// Shiloh's simplified lineup (his email, Oct 13 2026) — replaced the old
+// Good/Better/Best tiers. Every price is a STARTING price: the final number is
+// set after he inspects the vehicle, so always show "Starting at" next to it
+// and keep PRICE_DISCLAIMER near any price a customer is about to book on.
 const CAR_PACKAGES = {
-  good:   { name: "Good",   price: 100, tagline: "The essentials, done right",
-            features: ["Interior vacuum & wipe down", "Basic interior cleaning", "Exterior wash", "Wheels & tires cleaned"] },
-  better: { name: "Better", price: 150, tagline: "Our most popular detail", featured: true,
-            features: ["Full deep interior detail", "Thorough interior cleaning", "Thorough exterior wash", "Wheels & tires cleaned"] },
-  best:   { name: "Best",   price: 200, tagline: "The full Apostello treatment",
-            features: ["Full deep interior detail", "All surfaces & crevices", "Premium exterior wash & finish", "Wheels & tires cleaned"] },
+  interior: { name: "Interior Detail", price: 75, tagline: "The inside, done right",
+              features: ["Interior vacuum & wipe down", "Deep interior cleaning", "All surfaces & crevices"] },
+  exterior: { name: "Exterior Detail", price: 75, tagline: "The outside, done right",
+              features: ["Thorough exterior wash", "Exterior shine & finish", "Wheels & tires cleaned"] },
+  full:     { name: "Full Detail", sub: "Interior + Exterior", price: 150, featured: true,
+              tagline: "Inside and out, one visit",
+              features: ["Everything in the Interior Detail", "Everything in the Exterior Detail"] },
 };
+const PRICE_DISCLAIMER = "All prices are subject to change following an inspection of the vehicle.";
 const VEHICLE_UPCHARGE = 40; // trucks w/ bed, 3rd row, or large-trunk SUVs
 
+// Optional — never included in a package. Wax names are Shiloh's own wording.
 const ADD_ONS = {
-  sprayWax:   { name: "Spray Wax",         price: 40, blurb: "Shine + long-lasting paint barrier" },
-  carnauba:   { name: "Carnauba Wax",      price: 60, blurb: "Hand-applied deep gloss & protection" },
-  carpet:     { name: "Carpet Upholstery", price: 60, blurb: "Full vehicle deep clean" },
-  seat:       { name: "Seat Upholstery",   price: 40, blurb: "Full vehicle deep clean" },
+  sprayWax:   { name: "Basic Spray Wax",      price: 40, blurb: "Shine + long-lasting paint barrier" },
+  carnauba:   { name: "Premium Carnauba Wax", price: 60, blurb: "Hand-applied deep gloss & protection" },
+  carpet:     { name: "Carpet Upholstery",    price: 60, blurb: "Full vehicle deep clean" },
+  seat:       { name: "Seat Upholstery",      price: 40, blurb: "Full vehicle deep clean" },
 };
 
 // Suggested recurring pricing (NOT on the original flyer — placeholder discount
-// off the Better package. Confirm real numbers with Shiloh before launch.)
+// off a one-time Full Detail. Confirm real numbers with Shiloh before launch.)
 const RECURRING_PLANS = {
   monthly:  { name: "Monthly Maintenance",   pricePerVisit: 125, cadence: "every month",   save: 25 },
   biweekly: { name: "Bi-Weekly Maintenance", pricePerVisit: 115, cadence: "every 2 weeks", save: 35 },
