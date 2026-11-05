@@ -79,15 +79,12 @@
       <div id="carFlow" class="flex flex-col gap-8">
         <div class="surface p-6 md:p-8 reveal in">
           <p class="text-xs font-bold text-[var(--blue-300)] mb-4">STEP 2 — CHOOSE YOUR PACKAGE <span class="text-[var(--muted-2)] font-normal normal-case">(tap a card to select)</span></p>
-          <div class="grid md:grid-cols-3 gap-4" id="pkgCards"></div>
+          <div class="grid md:grid-cols-2 gap-5 pt-2" id="pkgCards"></div>
         </div>
 
         <div class="surface p-6 md:p-8 reveal in">
-          <p class="text-xs font-bold text-[var(--blue-300)] mb-4">STEP 3 — VEHICLE TYPE</p>
-          <label class="flex items-start gap-3 cursor-pointer">
-            <input type="checkbox" id="upchargeBox" class="mt-1 w-5 h-5 accent-[#2e9bff]">
-            <span class="text-sm text-[var(--muted)]">Truck with a bed, a vehicle with a 3rd row of seats, or a large-trunk SUV <span class="text-[var(--white)] font-semibold">(+$40)</span></span>
-          </label>
+          <p class="text-xs font-bold text-[var(--blue-300)] mb-4">STEP 3 — VEHICLE SIZE</p>
+          <div class="grid grid-cols-3 gap-3" id="sizeList"></div>
         </div>
 
         <div class="surface p-6 md:p-8 reveal in">
@@ -213,8 +210,9 @@
         <span class="font-display text-5xl text-[var(--gold-400)]">$<span id="totalPrice">150</span></span>
       </div>
       <p id="totalSuffix" class="text-xs text-[var(--muted-2)] mb-4"></p>
-      <!-- Shiloh's required disclaimer — keep this exact wording. -->
-      <p class="text-xs text-[var(--white)] font-semibold leading-relaxed border-l-2 border-[var(--blue-400)] pl-3 mb-6" role="note">All prices are subject to change following an inspection of the vehicle.</p>
+      <!-- Shiloh's own notes from his price sheet (js/site-data.js). -->
+      <p id="sumPricingNote" class="text-xs text-[var(--white)] font-semibold leading-relaxed border-l-2 border-[var(--blue-400)] pl-3 mb-3" role="note"></p>
+      <p id="sumSoilingNote" class="text-xs text-[var(--gold-400)] leading-relaxed pl-3 mb-6" role="note"></p>
       <a href="#calendarSection" class="btn btn-primary w-full justify-center" data-track="booking">Continue to Calendar ↓</a>
     </div>
   </div>
@@ -253,7 +251,7 @@
           <span class="font-display text-3xl text-[var(--gold-400)]" id="receiptTotal"></span>
         </div>
       </div>
-      <p class="text-xs text-[var(--muted)] font-semibold mb-2">All prices are subject to change following an inspection of the vehicle.</p>
+      <p id="receiptSoilingNote" class="text-xs text-[var(--muted)] font-semibold mb-2"></p>
       <p class="text-xs text-[var(--muted-2)] mb-6">This is a booking summary for your records, not a payment receipt — Shiloh collects payment at time of service.</p>
       <div class="flex gap-3" id="receiptActions">
         <button type="button" id="printReceiptBtn" class="btn btn-primary flex-1 justify-center">Print / Save as PDF</button>
@@ -285,7 +283,7 @@
   // the customer lands on the detail they just chose, not a default.
   const pkgParam = new URLSearchParams(location.search).get('pkg');
   let selectedPkg = Object.keys(CAR_PACKAGES).includes(pkgParam) ? pkgParam : 'full';
-  let upcharge = false;
+  let size = 'sedan';
   let selectedAddons = new Set();
   let freq = 'once';
   let boatFt = 20;
@@ -305,16 +303,10 @@
     render();
   }));
 
-  // package cards
+  // package cards — same card as the Services page (packageCardHTML)
   const pkgCards = document.getElementById('pkgCards');
-  pkgCards.innerHTML = Object.entries(CAR_PACKAGES).map(([key, p]) => `
-    <button type="button" data-pkg="${key}" class="tier-card flex flex-col justify-start text-left p-5 rounded-2xl border ${p.featured ? 'tier-best border-[var(--gold-400)]/40' : 'border-white/10'} bg-white/[0.02] ${key===selectedPkg ? 'ring-2 ring-[var(--blue-400)]' : ''}">
-      <p class="text-sm font-bold text-[var(--white)]">${p.name}</p>
-      <p class="text-xs text-[var(--muted-2)] mb-3">${p.sub || '&nbsp;'}</p>
-      <p class="text-[10px] font-bold uppercase tracking-wider text-[var(--muted-2)]">Starting at</p>
-      <p class="font-display text-3xl mb-2">$${p.price}</p>
-      <ul class="text-xs text-[var(--muted)] space-y-1">${p.features.map(f=>`<li>• ${f}</li>`).join('')}</ul>
-    </button>`).join('');
+  pkgCards.innerHTML = Object.entries(CAR_PACKAGES)
+    .map(([key, p]) => packageCardHTML(key, p, { tag: 'button', selected: key === selectedPkg })).join('');
   pkgCards.querySelectorAll('[data-pkg]').forEach(b => b.addEventListener('click', () => {
     selectedPkg = b.dataset.pkg;
     pkgCards.querySelectorAll('[data-pkg]').forEach(x => x.classList.remove('ring-2','ring-[var(--blue-400)]'));
@@ -322,24 +314,34 @@
     render();
   }));
 
-  // upcharge
-  document.getElementById('upchargeBox').addEventListener('change', (e) => { upcharge = e.target.checked; render(); });
+  // vehicle size
+  const sizeList = document.getElementById('sizeList');
+  sizeList.innerHTML = Object.entries(VEHICLE_SIZES).map(([key, v]) => `
+    <button type="button" class="chip flex-col justify-center py-3 text-center ${key === size ? 'selected' : ''}" data-size="${key}" style="border-radius:14px">
+      <span>${v.name}</span><span class="text-[var(--blue-300)] text-xs">${v.price ? '+$' + v.price : 'Base'}</span>
+    </button>`).join('');
+  sizeList.querySelectorAll('[data-size]').forEach(b => b.addEventListener('click', () => {
+    size = b.dataset.size;
+    sizeList.querySelectorAll('[data-size]').forEach(x => x.classList.toggle('selected', x === b));
+    render();
+  }));
 
-  // addons
+  // addons — ones the chosen package already includes show as "Included"
   const addonList = document.getElementById('addonList');
   addonList.innerHTML = Object.entries(ADD_ONS).map(([key, a]) => `
-    <label class="chip cursor-pointer justify-between" data-addon="${key}">
-      <span>${a.name} <span class="text-[var(--muted-2)]">— ${a.blurb}</span></span>
-      <span class="font-bold text-[var(--white)]">+$${a.price}</span>
-    </label>`).join('');
+    <button type="button" class="chip cursor-pointer justify-between" data-addon="${key}">
+      <span>${a.name}</span>
+      <span class="font-bold text-[var(--white)]" data-addon-price>+$${a.price}</span>
+    </button>`).join('');
   addonList.querySelectorAll('[data-addon]').forEach(el => el.addEventListener('click', () => {
     const key = el.dataset.addon;
+    if (included(key)) return;
     if (selectedAddons.has(key)) { selectedAddons.delete(key); el.classList.remove('selected'); }
     else { selectedAddons.add(key); el.classList.add('selected'); }
     render();
   }));
+  function included(key){ return (CAR_PACKAGES[selectedPkg].includes || []).includes(key); }
 
-  // frequency
   document.querySelectorAll('[data-freq]').forEach(b => b.addEventListener('click', () => {
     document.querySelectorAll('[data-freq]').forEach(x => x.classList.remove('selected'));
     b.classList.add('selected');
@@ -355,25 +357,41 @@
     render();
   });
 
-  function money(n){ return n.toLocaleString('en-US'); }
+  function money(n){ return n.toLocaleString('en-US', { maximumFractionDigits: 2 }); }
+  function price(n){ return (n < 0 ? '−$' : '$') + money(Math.abs(n)); }
 
   function render(){
     const lines = [];
     let total = 0;
     let suffix = '';
+    let freqNote = 'Pay once, no commitment.';
 
     if (mode === 'car') {
-      if (freq === 'once') {
-        const pkg = CAR_PACKAGES[selectedPkg];
-        lines.push([pkg.name, pkg.price]);
-        total += pkg.price;
-      } else {
+      const pkg = CAR_PACKAGES[selectedPkg];
+      lines.push([pkg.name, pkg.price]);
+      total += pkg.price;
+      if (freq !== 'once') {
         const plan = RECURRING_PLANS[freq];
-        lines.push([`${plan.name} (per visit)`, plan.pricePerVisit]);
-        total += plan.pricePerVisit;
-        suffix = `Billed ${plan.cadence} · save $${plan.save} vs a one-time Full Detail`;
+        if (pkg.recurring) {
+          // Percent off the package price only — not size or add-ons.
+          const off = Math.round(pkg.price * plan.pct) / 100;
+          lines.push([`${plan.name} discount (${plan.pct}% off package)`, -off]);
+          total -= off;
+          suffix = `Per visit, ${plan.cadence}`;
+          freqNote = `${plan.pct}% off the package price every visit — cancel anytime.`;
+        } else {
+          freqNote = `Recurring discounts are for base packages only — ${pkg.name} is priced as a one-time service.`;
+        }
       }
-      if (upcharge) { lines.push(['Truck bed / 3rd row / large SUV', VEHICLE_UPCHARGE]); total += VEHICLE_UPCHARGE; }
+      const sz = VEHICLE_SIZES[size];
+      if (sz.price) { lines.push([sz.name, sz.price]); total += sz.price; }
+      // Drop anything the package already includes, and reflect it on the chips.
+      addonList.querySelectorAll('[data-addon]').forEach(el => {
+        const inc = included(el.dataset.addon);
+        if (inc) { selectedAddons.delete(el.dataset.addon); el.classList.remove('selected'); }
+        el.classList.toggle('opacity-60', inc);
+        el.querySelector('[data-addon-price]').textContent = inc ? 'Included' : '+$' + ADD_ONS[el.dataset.addon].price;
+      });
       selectedAddons.forEach(key => { const a = ADD_ONS[key]; lines.push([a.name, a.price]); total += a.price; });
     } else {
       lines.push([`Boat detailing — ${boatFt} ft × $${BOAT_RATE_PER_FT}/ft`, boatFt * BOAT_RATE_PER_FT]);
@@ -381,17 +399,15 @@
       suffix = 'Mobile service — we come to your marina, dock, or driveway';
     }
 
-    document.getElementById('summaryLines').innerHTML = lines.map(([label, price]) =>
-      `<div class="flex justify-between"><span>${label}</span><span class="text-[var(--white)] font-semibold">$${money(price)}</span></div>`).join('');
+    document.getElementById('summaryLines').innerHTML = lines.map(([label, p]) =>
+      `<div class="flex justify-between gap-3"><span>${label}</span><span class="text-[var(--white)] font-semibold">${price(p)}</span></div>`).join('');
     document.getElementById('totalPrice').textContent = money(total);
     document.getElementById('totalSuffix').textContent = suffix;
-    document.getElementById('freqNote').textContent = freq === 'once'
-      ? 'Pay once, no commitment.'
-      : `$${RECURRING_PLANS[freq].pricePerVisit} per visit — cancel anytime.`;
+    document.getElementById('freqNote').textContent = freqNote;
 
     // "Estimated": this text lands in Shiloh's booking and in front of the
     // customer in Calendly, and the final price is set at inspection.
-    latestSummary = lines.map(([label, price]) => `${label} ($${money(price)})`).join(' + ') + ` — Estimated total: $${money(total)}`;
+    latestSummary = lines.map(([label, p]) => `${label} (${price(p)})`).join(' + ') + ` — Estimated total: $${money(total)}`;
     latestLines = lines;
     latestTotal = total;
 
@@ -406,6 +422,9 @@
       autoSyncTimer = setTimeout(initCalendly, 900);
     }
   }
+  document.getElementById('sumPricingNote').textContent = PRICING_NOTE;
+  document.getElementById('sumSoilingNote').textContent = SOILING_NOTE;
+  document.getElementById('receiptSoilingNote').textContent = SOILING_NOTE;
   render();
 
   // ---- push the estimator selections into Calendly as a prefilled answer ----
@@ -629,8 +648,8 @@
     document.getElementById('receiptCustName').textContent = name;
     document.getElementById('receiptCustPhone').textContent = phone;
     document.getElementById('receiptCustEmail').textContent = email;
-    document.getElementById('receiptLines').innerHTML = latestLines.map(([label, price]) =>
-      `<div class="flex justify-between"><span>${label}</span><span class="text-[var(--white)] font-semibold">$${money(price)}</span></div>`).join('');
+    document.getElementById('receiptLines').innerHTML = latestLines.map(([label, p]) =>
+      `<div class="flex justify-between gap-3"><span>${label}</span><span class="text-[var(--white)] font-semibold">${price(p)}</span></div>`).join('');
     document.getElementById('receiptTotal').textContent = `$${money(latestTotal)}`;
 
     receiptModal.classList.remove('hidden');

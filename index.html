@@ -129,12 +129,11 @@
           <button type="button" class="chip selected flex-1 justify-center tap-hint" data-hero-veh="car">Car / SUV</button>
           <button type="button" class="chip flex-1 justify-center" data-hero-veh="boat">Boat</button>
         </div>
-        <div id="heroCarRow" class="grid grid-cols-3 gap-2 mb-5">
-          <!-- Names only: every package price must read "Starting at", and the
-               readout below says that for whichever one is picked. -->
-          <button type="button" class="chip justify-center text-xs py-3" data-hero-pkg="75" data-hero-key="interior">Interior</button>
-          <button type="button" class="chip justify-center text-xs py-3" data-hero-pkg="75" data-hero-key="exterior">Exterior</button>
-          <button type="button" class="chip selected justify-center text-xs py-3" data-hero-pkg="150" data-hero-key="full">Full Detail</button>
+        <div id="heroCarRow" class="grid grid-cols-2 gap-2 mb-5">
+          <button type="button" class="chip justify-center text-xs" data-hero-pkg="100" data-hero-key="exterior">Exterior<br><span class="text-[var(--blue-300)]">$100</span></button>
+          <button type="button" class="chip justify-center text-xs" data-hero-pkg="100" data-hero-key="interior">Interior<br><span class="text-[var(--blue-300)]">$100</span></button>
+          <button type="button" class="chip selected justify-center text-xs" data-hero-pkg="175" data-hero-key="full">Full Detail<br><span class="text-[var(--blue-300)]">$175</span></button>
+          <button type="button" class="chip justify-center text-xs" data-hero-pkg="250" data-hero-key="deep">Deep Clean<br><span class="text-[var(--blue-300)]">$250</span></button>
         </div>
         <div id="heroBoatRow" class="hidden mb-5">
           <div class="flex items-center justify-between mb-2">
@@ -146,8 +145,8 @@
         </div>
         <div class="flex items-end justify-between border-t border-white/15 pt-4">
           <div>
-            <p class="text-xs text-[var(--muted)] mb-1">Starting at</p>
-            <p class="font-display text-4xl text-[var(--gold-400)]">$<span id="heroPrice">150</span></p>
+            <p class="text-xs text-[var(--muted)] mb-1">Your price</p>
+            <p class="font-display text-4xl text-[var(--gold-400)]">$<span id="heroPrice">175</span></p>
           </div>
           <a href="book.html?pkg=full" id="heroBookLink" class="btn btn-primary py-3 px-5 text-sm" data-track="quote-cta">Book This →</a>
         </div>
@@ -166,38 +165,14 @@
   <div class="max-w-7xl mx-auto px-5 md:px-8">
     <div class="text-center max-w-2xl mx-auto mb-14 reveal">
       <p class="eyebrow mb-3">Clean · Protect · Restore</p>
-      <h2 class="font-display text-4xl md:text-5xl mb-4">INSIDE, OUTSIDE, OR BOTH</h2>
-      <p class="text-[var(--muted)]">Three simple options with a clear starting price. Wax is an optional add-on.</p>
+      <h2 class="font-display text-4xl md:text-5xl mb-4">SIMPLE, UPFRONT PRICING</h2>
+      <p class="text-[var(--muted)]">Pick what your vehicle needs. Shiloh inspects it before he starts.</p>
     </div>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="surface tier-card tilt-card p-8 reveal">
-        <p class="eyebrow mb-4 text-[var(--muted)]">Interior Detail</p>
-        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
-        <p class="font-display text-5xl mb-4">$75</p>
-        <ul class="space-y-2 text-sm text-[var(--muted)] mb-6">
-          <li>Interior vacuum &amp; wipe down</li><li>Deep interior cleaning</li><li>All surfaces &amp; crevices</li>
-        </ul>
-      </div>
-      <div class="surface tier-card tilt-card p-8 reveal" style="transition-delay:.08s">
-        <p class="eyebrow mb-4 text-[var(--muted)]">Exterior Detail</p>
-        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
-        <p class="font-display text-5xl mb-4">$75</p>
-        <ul class="space-y-2 text-sm text-[var(--muted)] mb-6">
-          <li>Thorough exterior wash</li><li>Exterior shine &amp; finish</li><li>Wheels &amp; tires cleaned</li>
-        </ul>
-      </div>
-      <div class="surface tier-card tier-best tilt-card p-8 reveal" style="transition-delay:.16s">
-        <p class="eyebrow mb-1 text-[var(--muted)]">Full Detail</p>
-        <p class="text-xs text-[var(--muted-2)] mb-3">Interior + Exterior</p>
-        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
-        <p class="font-display text-5xl mb-4 text-[var(--gold-400)]">$150</p>
-        <ul class="space-y-2 text-sm text-[var(--muted)] mb-6">
-          <li>Everything in the Interior Detail</li><li>Everything in the Exterior Detail</li>
-        </ul>
-      </div>
+    <!-- Rendered from js/site-data.js — same cards as the Services page. -->
+    <div id="homePkgGrid" class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto"></div>
+    <div class="surface p-6 mt-6 max-w-5xl mx-auto" role="note">
+      <p id="homePricingNote" class="text-[var(--blue-300)] font-semibold"></p>
     </div>
-    <!-- Shiloh's required disclaimer — keep this exact wording. -->
-    <p class="text-center text-sm text-[var(--white)] font-semibold mt-8 reveal" role="note">All prices are subject to change following an inspection of the vehicle.</p>
     <div class="text-center mt-8 mb-16 reveal">
       <a href="services.html" class="btn btn-ghost">See full pricing, add-ons &amp; boat detailing →</a>
     </div>
@@ -209,19 +184,19 @@
         <div>
           <p class="eyebrow mb-3">Keep It Clean Year-Round</p>
           <h3 class="font-display text-3xl md:text-4xl mb-4">RECURRING MAINTENANCE PLANS</h3>
-          <p class="text-[var(--muted)] mb-6 max-w-md">Skip the one-and-done. Lock in a lower per-visit rate with a Monthly or Bi-Weekly plan — cancel anytime.</p>
+          <p class="text-[var(--muted)] mb-6 max-w-md">Skip the one-and-done. Save on every visit with a Monthly or Bi-Weekly plan — cancel anytime.</p>
           <a href="services.html#recurring" class="btn btn-primary">Compare Plans →</a>
         </div>
         <div class="grid sm:grid-cols-2 gap-4">
           <div class="tilt-card surface p-6">
             <p class="eyebrow mb-2 text-[var(--muted)]">Monthly</p>
-            <p class="font-display text-4xl mb-1">$125<span class="text-sm text-[var(--muted)]">/visit</span></p>
-            <p class="text-xs text-[var(--blue-300)]">Save $25 vs. one-time</p>
+            <p class="font-display text-4xl mb-1">15%<span class="text-sm text-[var(--muted)]"> off</span></p>
+            <p class="text-xs text-[var(--blue-300)]">Every visit, base packages</p>
           </div>
           <div class="tilt-card surface p-6">
             <p class="eyebrow mb-2 text-[var(--muted)]">Bi-Weekly</p>
-            <p class="font-display text-4xl mb-1">$115<span class="text-sm text-[var(--muted)]">/visit</span></p>
-            <p class="text-xs text-[var(--blue-300)]">Save $35 vs. one-time</p>
+            <p class="font-display text-4xl mb-1">20%<span class="text-sm text-[var(--muted)]"> off</span></p>
+            <p class="text-xs text-[var(--blue-300)]">Every visit, base packages</p>
           </div>
         </div>
       </div>
@@ -412,7 +387,12 @@ document.addEventListener('DOMContentLoaded', function(){
   const boatFtVal = document.getElementById('heroBoatFtVal');
   const priceEl = document.getElementById('heroPrice');
   const bookLink = document.getElementById('heroBookLink');
-  let mode = 'car', pkgPrice = 150, pkgKey = 'full';
+  let mode = 'car', pkgPrice = 175, pkgKey = 'full';
+  const homeGrid = document.getElementById('homePkgGrid');
+  if (homeGrid) homeGrid.innerHTML = Object.entries(CAR_PACKAGES)
+    .map(([k, p]) => `<a href="book.html?pkg=${k}" class="block" data-track="quote-cta">${packageCardHTML(k, p)}</a>`).join('');
+  const homeNote = document.getElementById('homePricingNote');
+  if (homeNote) homeNote.textContent = PRICING_NOTE;
 
   vehBtns.forEach(b => b.addEventListener('click', () => {
     vehBtns.forEach(x => { x.classList.remove('selected'); x.classList.remove('tap-hint'); });

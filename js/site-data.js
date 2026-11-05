@@ -27,37 +27,68 @@ const CONTACT_PHONE_TEL = "+15404843990";
 // is the one proven to work — don't "clean it up" without re-testing live.
 const GOOGLE_REVIEW_URL = "https://www.google.com/maps/place/Apostello+Detailing/@37.0067829,-79.7772451,17z/data=!4m8!3m7!1s0x884d676b4ceb58f9:0x84f0e111fb99887a!8m2!3d37.0067829!4d-79.7772451!9m1!1b1!16s%2Fg%2F11zx49b7n7?entry=ttu&g_ep=EgoyMDI2MDgyNi4wIKXMDSoASAFQAw%3D%3D";
 
-// ---- CAR DETAILING SERVICES ----
-// Shiloh's simplified lineup (his email, Oct 13 2026) — replaced the old
-// Good/Better/Best tiers. Every price is a STARTING price: the final number is
-// set after he inspects the vehicle, so always show "Starting at" next to it
-// and keep PRICE_DISCLAIMER near any price a customer is about to book on.
+// ---- CAR DETAILING PRICING ----
+// Straight from Shiloh's price sheet graphic (Nov 5 2026). Every page renders
+// cards, add-ons, sizes and recurring from these objects — change prices here.
+// `includes` = add-on keys a package already contains (shown as "Included").
+// `recurring` = eligible for the recurring discount ("Base packages only").
 const CAR_PACKAGES = {
-  interior: { name: "Interior Detail", price: 75, tagline: "The inside, done right",
-              features: ["Interior vacuum & wipe down", "Deep interior cleaning", "All surfaces & crevices"] },
-  exterior: { name: "Exterior Detail", price: 75, tagline: "The outside, done right",
-              features: ["Thorough exterior wash", "Exterior shine & finish", "Wheels & tires cleaned"] },
-  full:     { name: "Full Detail", sub: "Interior + Exterior", price: 150, featured: true,
-              tagline: "Inside and out, one visit",
-              features: ["Everything in the Interior Detail", "Everything in the Exterior Detail"] },
+  exterior: { name: "Exterior", price: 100, recurring: true,
+              desc: "Wash, wheels, tires, windows, spray wax" },
+  interior: { name: "Interior", price: 100, recurring: true,
+              desc: "Vacuum, wipe-down, windows, spot clean" },
+  full:     { name: "Full Detail", price: 175, recurring: true, badge: "Most Popular", featured: true,
+              desc: "Interior + exterior + spray wax" },
+  deep:     { name: "Deep Clean", price: 250, badge: "Save $25", includes: ["carpet", "seat"],
+              desc: "Full detail + carpet shampoo + seat upholstery" },
 };
-const PRICE_DISCLAIMER = "All prices are subject to change following an inspection of the vehicle.";
-const VEHICLE_UPCHARGE = 40; // trucks w/ bed, 3rd row, or large-trunk SUVs
 
-// Optional — never included in a package. Wax names are Shiloh's own wording.
+const VEHICLE_SIZES = {
+  sedan: { name: "Sedan / coupe", price: 0 },
+  suv:   { name: "SUV / truck",   price: 25 },
+  big:   { name: "3-row / van",   price: 50 },
+};
+
 const ADD_ONS = {
-  sprayWax:   { name: "Basic Spray Wax",      price: 40, blurb: "Shine + long-lasting paint barrier" },
-  carnauba:   { name: "Premium Carnauba Wax", price: 60, blurb: "Hand-applied deep gloss & protection" },
-  carpet:     { name: "Carpet Upholstery",    price: 60, blurb: "Full vehicle deep clean" },
-  seat:       { name: "Seat Upholstery",      price: 40, blurb: "Full vehicle deep clean" },
+  carpet: { name: "Carpet shampoo",  price: 60 },
+  seat:   { name: "Seat upholstery", price: 40 },
 };
 
-// Suggested recurring pricing (NOT on the original flyer — placeholder discount
-// off a one-time Full Detail. Confirm real numbers with Shiloh before launch.)
+// Percent off the package price only (not size or add-ons), base packages only.
 const RECURRING_PLANS = {
-  monthly:  { name: "Monthly Maintenance",   pricePerVisit: 125, cadence: "every month",   save: 25 },
-  biweekly: { name: "Bi-Weekly Maintenance", pricePerVisit: 115, cadence: "every 2 weeks", save: 35 },
+  monthly:  { name: "Monthly",   pct: 15, cadence: "every month" },
+  biweekly: { name: "Bi-weekly", pct: 20, cadence: "every 2 weeks" },
 };
+
+const PRICING_NOTE = "Not sure what you need? Book the Full Detail. I'll inspect your vehicle and recommend any extras before I start. No surprise charges.";
+const SOILING_NOTE = "Heavy pet hair, sand, or soiling: +$25–50, quoted before work begins.";
+
+// Shared renderers so home, services and book can't drift apart.
+function packageCardHTML(key, p, { tag = 'div', selected = false } = {}) {
+  const badge = p.badge
+    ? `<span class="absolute -top-3 right-6 chip selected text-[11px] py-1 ${p.featured ? '' : 'text-[var(--gold-400)]'}" style="${p.featured ? '' : 'border-color:var(--gold-400)'}">${p.badge}</span>`
+    : '';
+  const attrs = tag === 'button' ? `type="button" data-pkg="${key}"` : '';
+  return `<${tag} ${attrs} class="surface tier-card ${p.featured ? 'tier-best' : ''} relative flex flex-col justify-start text-left p-6 md:p-7 w-full ${selected ? 'ring-2 ring-[var(--blue-400)]' : ''}">
+    ${badge}
+    <div class="flex items-start justify-between gap-4 mb-2">
+      <p class="font-bold text-lg text-[var(--white)]">${p.name}</p>
+      <p class="font-display text-4xl leading-none ${p.featured ? 'text-[var(--gold-400)]' : ''}">$${p.price}</p>
+    </div>
+    <p class="text-sm text-[var(--muted)]">${p.desc}</p>
+  </${tag}>`;
+}
+function pricingExtrasHTML() {
+  const row = (l, r) => `<div class="flex justify-between gap-3 py-1"><span>${l}</span><span class="font-bold text-[var(--white)]">${r}</span></div>`;
+  return `
+  <div class="surface p-6"><p class="eyebrow mb-3 text-[var(--muted)]">Add-ons</p><div class="text-sm text-[var(--muted)]">
+    ${Object.values(ADD_ONS).map(a => row(a.name, '$' + a.price)).join('')}</div></div>
+  <div class="surface p-6"><p class="eyebrow mb-3 text-[var(--muted)]">Vehicle size</p><div class="text-sm text-[var(--muted)]">
+    ${Object.values(VEHICLE_SIZES).map(s => row(s.name, s.price ? '+$' + s.price : 'Base')).join('')}</div></div>
+  <div class="surface p-6"><p class="eyebrow mb-3 text-[var(--muted)]">Recurring</p><div class="text-sm text-[var(--muted)]">
+    ${Object.values(RECURRING_PLANS).map(r => row(r.name, r.pct + '% off')).join('')}
+    <p class="text-xs text-[var(--muted-2)] mt-1">Base packages only</p></div></div>`;
+}
 
 // ---- BOAT DETAILING (from your boat flyer) ----
 const BOAT_RATE_PER_FT = 15;

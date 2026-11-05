@@ -53,98 +53,24 @@
   <div class="max-w-4xl mx-auto px-5 md:px-8 text-center reveal in">
     <p class="eyebrow mb-3">Clean · Protect · Restore</p>
     <h1 class="font-display text-4xl md:text-6xl mb-4">SERVICES &amp; PRICING</h1>
-    <p class="text-[var(--muted)] max-w-xl mx-auto">Three simple options for cars, trucks, and SUVs, plus boat detailing — with a clear starting price on each.</p>
+    <p class="text-[var(--muted)] max-w-xl mx-auto">Simple, upfront pricing for cars, trucks, SUVs, and boats.</p>
   </div>
 </section>
 
-<!-- CAR SERVICES — Shiloh's simplified lineup. Prices mirror CAR_PACKAGES in
-     js/site-data.js; change both together. -->
-<section class="py-14">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
-    <h2 class="font-display text-3xl md:text-4xl mb-8 reveal">CAR / SUV / TRUCK DETAILING</h2>
-    <div class="grid md:grid-cols-3 gap-6 mb-6">
-      <div class="surface tier-card p-8 reveal">
-        <p class="eyebrow mb-4 text-[var(--muted)]">Interior Detail</p>
-        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
-        <p class="font-display text-5xl mb-6">$75</p>
-        <ul class="space-y-3 text-sm text-[var(--muted)] mb-8">
-          <li class="flex gap-2"><span class="text-[var(--blue-400)]">✓</span>Interior vacuum &amp; wipe down</li>
-          <li class="flex gap-2"><span class="text-[var(--blue-400)]">✓</span>Deep interior cleaning</li>
-          <li class="flex gap-2"><span class="text-[var(--blue-400)]">✓</span>All surfaces &amp; crevices</li>
-        </ul>
-        <a href="book.html?pkg=interior" class="btn btn-ghost w-full justify-center" data-track="quote-cta">Book Interior Detail</a>
-      </div>
-      <div class="surface tier-card p-8 reveal" style="transition-delay:.08s">
-        <p class="eyebrow mb-4 text-[var(--muted)]">Exterior Detail</p>
-        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
-        <p class="font-display text-5xl mb-6">$75</p>
-        <ul class="space-y-3 text-sm text-[var(--muted)] mb-8">
-          <li class="flex gap-2"><span class="text-[var(--blue-400)]">✓</span>Thorough exterior wash</li>
-          <li class="flex gap-2"><span class="text-[var(--blue-400)]">✓</span>Exterior shine &amp; finish</li>
-          <li class="flex gap-2"><span class="text-[var(--blue-400)]">✓</span>Wheels &amp; tires cleaned</li>
-        </ul>
-        <a href="book.html?pkg=exterior" class="btn btn-ghost w-full justify-center" data-track="quote-cta">Book Exterior Detail</a>
-      </div>
-      <div class="surface tier-card tier-best p-8 reveal" style="transition-delay:.16s">
-        <p class="eyebrow mb-1 text-[var(--muted)]">Full Detail</p>
-        <p class="text-xs text-[var(--muted-2)] mb-4">Interior + Exterior</p>
-        <p class="text-xs font-bold uppercase tracking-wider text-[var(--muted-2)] mb-1">Starting at</p>
-        <p class="font-display text-5xl mb-6 text-[var(--gold-400)]">$150</p>
-        <ul class="space-y-3 text-sm text-[var(--muted)] mb-8">
-          <li class="flex gap-2"><span class="text-[var(--gold-400)]">✓</span>Everything in the Interior Detail</li>
-          <li class="flex gap-2"><span class="text-[var(--gold-400)]">✓</span>Everything in the Exterior Detail</li>
-        </ul>
-        <a href="book.html?pkg=full" class="btn btn-gold w-full justify-center" data-track="quote-cta">Book Full Detail</a>
-      </div>
-    </div>
-    <!-- Shiloh's required disclaimer — keep this exact wording. -->
-    <div class="surface p-6 flex items-start gap-4 mb-4 reveal" role="note">
-      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" class="shrink-0" aria-hidden="true"><circle cx="13" cy="13" r="10.5" stroke="#4cbaff" stroke-width="1.6"/><path d="M13 12v6" stroke="#4cbaff" stroke-width="1.8" stroke-linecap="round"/><circle cx="13" cy="8.5" r="1.1" fill="#4cbaff"/></svg>
-      <div>
-        <p class="text-sm text-[var(--white)] font-bold mb-1">All prices are subject to change following an inspection of the vehicle.</p>
-        <p class="text-sm text-[var(--muted)]">Pricing can vary with your vehicle&rsquo;s size, its condition, and the amount of work it needs.</p>
-      </div>
-    </div>
-    <div class="surface p-6 flex items-center gap-4 reveal">
-      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" class="shrink-0"><path d="M4 20l4-8h12l4 8M6 20v2M20 20v2M8 12V7a3 3 0 013-3h4a3 3 0 013 3v5" stroke="#4cbaff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <p class="text-sm text-[var(--muted)]"><span class="text-[var(--white)] font-bold">+$40 upcharge</span> for vehicles with a truck bed, an extra row of seats, or a large trunk (SUV).</p>
-    </div>
-  </div>
-</section>
-
-<!-- ADD-ONS -->
-<section class="py-14 bg-wash-panel border-y border-white/[0.06]">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
-    <h2 class="font-display text-3xl md:text-4xl mb-3 reveal">OPTIONAL ADD-ONS</h2>
-    <p class="text-[var(--muted)] mb-8 max-w-2xl reveal">Not included in any detail — add one when you book if you want it.</p>
-    <div id="addonsGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
-  </div>
-</section>
-
-<!-- RECURRING -->
+<!-- CAR PRICING — Shiloh's price sheet (Nov 2026). Rendered from js/site-data.js. -->
 <section class="py-14" id="recurring">
-  <div class="max-w-7xl mx-auto px-5 md:px-8">
-    <div class="flex items-center gap-3 mb-3 reveal">
-      <h2 class="font-display text-3xl md:text-4xl">RECURRING MAINTENANCE PLANS</h2>
-      <span class="chip text-[10px] py-1">Suggested pricing</span>
+  <div class="max-w-5xl mx-auto px-5 md:px-8">
+    <h2 class="font-display text-3xl md:text-4xl mb-8 reveal">CAR / SUV / TRUCK DETAILING</h2>
+    <div id="pkgGrid" class="grid md:grid-cols-2 gap-6 mb-6"></div>
+    <div class="surface p-6 mb-6 reveal in border-[var(--blue-400)]/30" role="note">
+      <p id="pricingNote" class="text-[var(--blue-300)] font-semibold"></p>
     </div>
-    <p class="text-[var(--muted)] mb-8 max-w-2xl reveal">Keep your ride looking fresh year-round. Lock in a lower per-visit rate with a recurring plan — cancel anytime.</p>
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="surface p-8 reveal">
-        <p class="eyebrow mb-2 text-[var(--muted)]">Monthly Maintenance</p>
-        <p class="font-display text-5xl mb-1">$125<span class="text-lg text-[var(--muted)]">/visit</span></p>
-        <p class="text-sm text-[var(--blue-300)] mb-6">Save $25 vs. a one-time Full Detail</p>
-        <p class="text-sm text-[var(--muted)]">A Full Detail, once a month, automatically scheduled.</p>
-      </div>
-      <div class="surface p-8 reveal" style="transition-delay:.08s">
-        <p class="eyebrow mb-2 text-[var(--muted)]">Bi-Weekly Maintenance</p>
-        <p class="font-display text-5xl mb-1">$115<span class="text-lg text-[var(--muted)]">/visit</span></p>
-        <p class="text-sm text-[var(--blue-300)] mb-6">Save $35 vs. a one-time Full Detail</p>
-        <p class="text-sm text-[var(--muted)]">For the person who wants it showroom-clean, every two weeks.</p>
-      </div>
+    <div id="extrasGrid" class="grid md:grid-cols-3 gap-5 mb-6"></div>
+    <div class="surface p-5 reveal in" role="note" style="border-color:rgba(242,193,78,.3)">
+      <p id="soilingNote" class="text-sm text-[var(--gold-400)]"></p>
     </div>
-    <div class="text-center mt-8 reveal">
-      <a href="book.html" class="btn btn-primary">Set Up a Recurring Plan →</a>
+    <div class="text-center mt-10">
+      <a href="book.html" class="btn btn-primary" data-track="quote-cta">Book Now →</a>
     </div>
   </div>
 </section>
@@ -197,12 +123,11 @@
 <script src="js/site-data.js"></script>
 <script src="js/site-common.js"></script>
 <script>
-document.getElementById('addonsGrid').innerHTML = Object.values(ADD_ONS).map(a => `
-  <div class="surface p-6 reveal in">
-    <p class="font-bold mb-1">${a.name}</p>
-    <p class="text-xs text-[var(--muted)] mb-4">${a.blurb}</p>
-    <p class="font-display text-3xl text-[var(--blue-300)]">$${a.price}</p>
-  </div>`).join('');
+document.getElementById('pkgGrid').innerHTML = Object.entries(CAR_PACKAGES)
+  .map(([k, p]) => `<a href="book.html?pkg=${k}" class="block" data-track="quote-cta">${packageCardHTML(k, p)}</a>`).join('');
+document.getElementById('extrasGrid').innerHTML = pricingExtrasHTML();
+document.getElementById('pricingNote').textContent = PRICING_NOTE;
+document.getElementById('soilingNote').textContent = SOILING_NOTE;
 </script>
 </body>
 </html>
